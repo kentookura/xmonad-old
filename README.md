@@ -2,7 +2,8 @@
 
 I set my escape-key to super, so I think this config works best with that.
 Here are the basic keybindings:
-
+| modifiers    | key    | action                           |
+| :----------: | :----: | :------------------------------: |
 | Mod4         | Return | terminal                         |
 | Mod4         | d      | dmenu_run                        |
 | Mod4         | w      | qutebrowser                      |
