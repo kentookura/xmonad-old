@@ -11,6 +11,7 @@ import           XMonad.Hooks.DynamicLog
 import           XMonad.Hooks.ManageDocks
 import           XMonad.Layout.NoBorders
 import           XMonad.Layout.ResizableTile
+import           XMonad.Layout.Named
 import           XMonad.Layout.Spacing
 import           XMonad.ManageHook
 import           XMonad.Prompt
@@ -34,8 +35,7 @@ main = do
     , logHook = dynamicLogWithPP xmobarPP
               { ppOutput = hPutStrLn xmproc
               , ppTitle = xmobarColor "#C4C4C4" "" . shorten 50
-              , ppCurrent = xmobarColor "#3579A8" ""
-
+              , ppCurrent = xmobarColor "#3579A8" "" . wrap "[" "]"
               }
     , borderWidth = 2
     , normalBorderColor = normalBorderColor'
@@ -55,7 +55,7 @@ focusedBorderColor' = "#8f3f71"
 --------------------------------------------------------------------------------
 -- layouts
 
-myLayout = avoidStruts $ smartBorders tiled ||| smartBorders (Mirror tiled) ||| noBorders Full
+myLayout = avoidStruts $ named "[]=" (smartBorders tiled) ||| named "TTT" (smartBorders (Mirror tiled)) ||| named "[M]" (noBorders Full)
   where
     tiled = ResizableTall 1 (2/100) (1/2) []
 
@@ -77,9 +77,18 @@ myXPConfig = greenXPConfig
 
 --------------------------------------------------------------------------------
 -- topics
+-- todo: email topic
 
 myTopics :: [Topic]
-myTopics = ["none", "xm", "config", "cv", "docs", "hsk", "web"]
+myTopics = ["none"
+           , "xm"
+           , "uni"
+           , "config"
+           , "site"
+           , "cv"
+           , "docs"
+           , "hsk"
+           , "web"]
 
 myTopicConfig :: TopicConfig
 myTopicConfig = def
@@ -87,24 +96,27 @@ myTopicConfig = def
   { topicDirs = M.fromList
     [ ("none", "")
     , ("config", ".config")
+    , ("uni", "uni")
+    , ("site", "site")
     , ("docs", "doc")
     , ("xm", ".xmonad")
     , ("cv", "doc/cv")
     , ("web", "dl")
     ]
-  , defaultTopicAction = const $ spawnShell >*> 3
-  , defaultTopic = "config"
   , topicActions = M.fromList
-    [ ("config", spawnShell)
-
-    , ("docs", spawn "ranger doc")
-
-    , ("cv", spawn "zathura doc/cv/output/resume.pdf" 
-          >> spawn "alacritty -e vim doc/cv/markdown/resume.md")
-
-    , ("xm", spawn "alacritty -e vim .xmonad/xmonad.hs"
-          >> spawnShell)
- 
+    [ ("config", spawn "alacritty"
+              >> spawn "alacritty")
+    , ("docs",   spawn "zathura ~/doc/haskell.pdf")
+    , ("cv",     spawn "zathura doc/cv/output/resume.pdf" 
+              >> spawn "alacritty --working-directory doc/cv/markdown/"
+              >> spawn "alacritty -e vim doc/cv/markdown/resume.md")
+    , ("uni", spawn "alacritty -e ranger uni" >> spawnShell)
+    , ("site",   spawn "alacritty --working-directory site/src"
+              >> spawn "alacritty --working-directory site/src/templates"
+              >> spawn "alacritty --working-directory site -e stack exec site watch"
+              >> spawn "qutebrowser http://localhost:8000")
+    , ("xm",     spawn "alacritty -e vim .xmonad/xmonad.hs"
+              >> spawnShell)
     ]
   }
 
@@ -138,6 +150,8 @@ scratchpads = [ NS "htop" "alacritty -t htop -e /bin/htop" (title =? "htop")
                   ( customFloating $ W.RationalRect (4/6) (1/37) (1/3) (1/3))
               , NS "watch" "alacritty --working-directory site/ --hold -t watch -e stack exec site watch" (title =? "watch")
                   ( customFloating $ W.RationalRect (0) (1/37) (1/3) (2/3))
+              , NS "term" "alacritty -t term" (title =? "term")
+                  ( customFloating $ W.RationalRect (1/3) (1/37) (2/3) (2/3))
               ]
 --------------------------------------------------------------------------------
 -- keys
@@ -149,6 +163,7 @@ keys' conf@(XConfig {XMonad.modMask = modMask}) = M.fromList $
   [
   -- scratchpads and prompts
     ((modMask .|. mod1Mask   , xK_t), namedScratchpadAction scratchpads "htop")
+  , ((modMask .|. mod1Mask   , xK_space), namedScratchpadAction scratchpads "term")
   , ((modMask .|. mod1Mask   , xK_f), namedScratchpadAction scratchpads "pfetch")
   , ((modMask .|. mod1Mask   , xK_c), namedScratchpadAction scratchpads "cava")
   , ((modMask .|. mod1Mask   , xK_w), namedScratchpadAction scratchpads "watch")
