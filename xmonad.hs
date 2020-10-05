@@ -2,8 +2,6 @@ import qualified Data.Map as M
 import           Data.List (isPrefixOf)
 import           System.Exit
 import           XMonad
-import           XMonad.StackSet
-import           XMonad.Operations
 import qualified XMonad.Actions.FlexibleResize as Flex
 import           XMonad.Actions.FloatKeys
 import           XMonad.Actions.PhysicalScreens
@@ -11,13 +9,21 @@ import           XMonad.Actions.TopicSpace
 import           XMonad.Hooks.DynamicLog
 import           XMonad.Hooks.ManageDocks
 import           XMonad.Hooks.ManageHelpers
+
+import           XMonad.Layout.NoFrillsDecoration
+import           XMonad.Layout.Gaps
+import           XMonad.Layout.Spacing
+
+
+import           XMonad.Layout.Named
 import           XMonad.Layout.NoBorders
 import           XMonad.Layout.ResizableTile
-import           XMonad.Layout.Named
 import           XMonad.Layout.Spacing
 import           XMonad.ManageHook
+import           XMonad.Operations
 import           XMonad.Prompt
 import           XMonad.Prompt.Workspace
+import           XMonad.StackSet
 import           XMonad.StackSet as W
 import           XMonad.Util.EZConfig(additionalKeys)
 import           XMonad.Util.NamedScratchpad
@@ -33,22 +39,67 @@ main = do
   xmproc <- spawnPipe "xmobar /home/kento/.xmonad/xmobar"
   checkTopicConfig myTopics myTopicConfig
   xmonad $ docks defaultConfig
-    { layoutHook = 
-        spacingRaw True (Border 0 0 0 0) True (Border 10 10 5 5) True myLayout
+    { layoutHook = myLayout
+        -- spacingRaw True (Border 0 0 0 0) True (Border 10 10 5 5) True myLayout
     , XMonad.workspaces = myTopics
     , logHook = dynamicLogWithPP xmobarPP
               { ppOutput = hPutStrLn xmproc
               , ppTitle = xmobarColor "#C4C4C4" "" . shorten 50
               , ppCurrent = xmobarColor "#3579A8" "" . wrap "[" "]"
               }
-    , borderWidth = 2
+    , borderWidth = 0
+    , focusFollowsMouse = False
     , normalBorderColor = normalBorderColor'
     , focusedBorderColor = focusedBorderColor'
     , modMask = modMask'
     , keys = keys'
     , mouseBindings = myMouseBindings
-    , manageHook = manageHooks
+    , manageHook = myManageHook
     }
+
+-- }}}
+
+
+--------------------------------------------------------------------------------
+-- layouts
+-- {{{
+myLayout = tiled ||| mirrorTiled ||| full
+  where
+    tiled = named "[]="
+      $ avoidStruts
+      $ addTopBar
+      $ myGaps
+      $ mySpacing
+      $ ResizableTall 1 (2/100) (1/2) []
+    mirrorTiled = named "TTT"
+      $ avoidStruts
+      $ addTopBar
+      $ myGaps
+      $ mySpacing
+      $ Mirror $ ResizableTall 1 (2/100) (1/2) []
+    full = named "[ ]"
+      $ noBorders Full
+    addTopBar = noFrillsDeco shrinkText barTheme
+    myGaps = gaps [(U, 10), (D, 10), (L, 10), (R, 10)]
+    mySpacing = spacing 10
+    barTheme =
+        def
+          { fontName = font
+          , inactiveBorderColor = black
+          , inactiveColor = black
+          , inactiveTextColor = black
+          , activeBorderColor = purple
+          , activeColor = purple
+          , activeTextColor = purple
+          , urgentTextColor = purple
+          , urgentBorderColor = purple
+          , decoHeight = decorationHeight
+          }
+        where
+          black = "#282828"
+          purple = "#8f3f71"
+          decorationHeight = 7
+          font = "xft:monospace:size=10" -- doesn't matter because of `shrinkText`
 -- }}}
 
 --------------------------------------------------------------------------------
@@ -75,18 +126,15 @@ myXPConfig = greenXPConfig
 --------------------------------------------------------------------------------
 -- hooks
 -- {{{
-manageHooks = namedScratchpadManageHook pads <+> composeOne
-  [ ("uni" `isPrefixOf`) <$> title -?> doShift "uni" ]
--- }}}
 
---------------------------------------------------------------------------------
--- layouts
--- {{{
-myLayout = avoidStruts $ named "[]=" (smartBorders tiled) 
-                     ||| named "TTT" (smartBorders (Mirror tiled)) 
-                     ||| named "[ ]" (noBorders Full)
-  where
-    tiled = ResizableTall 1 (2/100) (1/2) []
+myManageHook = composeAll . concat $
+  [ [isDialog --> doFloat] 
+  , [namedScratchpadManageHook pads]
+  , [(className =? x <||> title =? x <||> resource =? x) --> doShift "uni" | x <- uniShifts]
+  ]
+    where
+      uniShifts = ["jupyter"]
+
 -- }}}
 
 --------------------------------------------------------------------------------
@@ -109,29 +157,28 @@ myTopicConfig :: TopicConfig
 myTopicConfig = def
   -- associate directory with topic
   { topicDirs = M.fromList
-    [ ("none", "./")
+    [ ("none"  , "./")
     , ("config", ".config")
-    , ("uni", "uni")
-    , ("site", "site")
-    , ("docs", "doc")
-    , ("xm", ".xmonad")
-    , ("cv", "doc/cv")
-    , ("web", "dl")
+    , ("uni"   , "uni")
+    , ("site"  , "site")
+    , ("docs"  , "doc")
+    , ("xm"    , ".xmonad")
+    , ("cv"    , "doc/cv")
+    , ("web"   , "dl")
     ]
   , topicActions = M.fromList
-    [ ("config", spawn "alacritty"
-              >> spawn "alacritty")
-    , ("docs",   spawn "zathura ~/doc/haskell.pdf")
-    , ("cv",     spawn "zathura doc/cv/output/resume.pdf" 
+    [ ("none"  , spawnShell)
+    , ("config", spawn "alacritty")
+    , ("docs"  , spawn "zathura ~/doc/haskell.pdf")
+    , ("cv"    , spawn "zathura doc/cv/output/resume.pdf" 
               >> spawn "alacritty --working-directory doc/cv/markdown/"
               >> spawn "alacritty -e vim doc/cv/markdown/resume.md")
-    , ("uni",    spawn "alacritty --working-directory uni -e abduco -A uni-session dvtm"
+    , ("uni"   , spawn "alacritty --working-directory uni -e abduco -A uni-session dvtm"
               >> spawn "alacritty --working-directory uni -e ranger")
-    , ("site",   spawn "alacritty --working-directory site/src"
+    , ("site"  , spawn "alacritty --working-directory site/src"
               >> spawn "alacritty --working-directory site/src/templates"
               >> spawn "qutebrowser http://localhost:8000")
-    , ("xm",     spawn "alacritty -e vim .xmonad/xmonad.hs"
-              >> spawnShell)
+    , ("xm"    , spawn "alacritty -e vim .xmonad/xmonad.hs")
     ]
   }
 
@@ -162,7 +209,7 @@ pads :: [NamedScratchpad]
 pads = [ NS "htop" "alacritty -t htop -e /bin/htop" (title =? "htop") htopHook
               , NS "pfetch" "alacritty --hold -t pfetch -e /bin/pfetch" (title =? "pfetch") pfetchHook
               , NS "cava" "alacritty --hold -t cava -e /bin/cava" (title =? "cava") cavaHook
-              , NS "watch" "alacritty --working-directory site/ --hold -t watch -e stack exec site watch" (title =? "watch") watchHook
+              --, NS "watch" "alacritty --working-directory site/ --hold -t watch -e stack exec site watch" (title =? "watch") watchHook
               , NS "term" "alacritty -t term" (title =? "term") termHook
               ]
                 where htopHook = ( customFloating $ rr (1/3) (1/37) (2/3) (2/3)) 
@@ -186,7 +233,7 @@ keys' conf@(XConfig {XMonad.modMask = modMask}) = M.fromList $
   , ((modMask                , xK_space), namedScratchpadAction pads "term")
   , ((modMask .|. mod1Mask   , xK_f),     namedScratchpadAction pads "pfetch")
   , ((modMask .|. mod1Mask   , xK_c),     namedScratchpadAction pads "cava")
-  , ((modMask .|. mod1Mask   , xK_w),     namedScratchpadAction pads "watch")
+  --, ((modMask .|. mod1Mask   , xK_w),     namedScratchpadAction pads "watch")
 
   -- programs
   , ((modMask              , xK_Return), spawnShell )
