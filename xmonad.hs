@@ -54,18 +54,6 @@ main = do
 normalBorderColor' = "#282828"
 focusedBorderColor' = "#8f3f71"
 
---------------------------------------------------------------------------------
--- layouts
-
-myLayout = avoidStruts $ named "[]=" (smartBorders tiled) 
-                     ||| named "TTT" (smartBorders (Mirror tiled)) 
-                     ||| named "[M]" (noBorders Full)
-  where
-    tiled = ResizableTall 1 (2/100) (1/2) []
-
---------------------------------------------------------------------------------
--- xprompt
-
 myXPConfig :: XPConfig
 myXPConfig = greenXPConfig 
   { font = "xft:Dina:bold:size=10:antialias=true" 
@@ -81,8 +69,18 @@ myXPConfig = greenXPConfig
 
 --------------------------------------------------------------------------------
 -- hooks
-manageHooks = namedScratchpadManageHook scratchpads <+> composeOne
+manageHooks = namedScratchpadManageHook pads <+> composeOne
   [ ("uni" `isPrefixOf`) <$> title -?> doShift "uni" ]
+
+--------------------------------------------------------------------------------
+-- layouts
+
+myLayout = avoidStruts $ named "[]=" (smartBorders tiled) 
+                     ||| named "TTT" (smartBorders (Mirror tiled)) 
+                     ||| named "[M]" (noBorders Full)
+  where
+    tiled = ResizableTall 1 (2/100) (1/2) []
+
 
 --------------------------------------------------------------------------------
 -- topics
@@ -119,7 +117,7 @@ myTopicConfig = def
     , ("cv",     spawn "zathura doc/cv/output/resume.pdf" 
               >> spawn "alacritty --working-directory doc/cv/markdown/"
               >> spawn "alacritty -e vim doc/cv/markdown/resume.md")
-    , ("uni", spawn "alacritty -e ranger uni" >> spawnShell)
+    , ("uni",    spawn "alacritty -e abduco -a uni-session" )
     , ("site",   spawn "alacritty --working-directory site/src"
               >> spawn "alacritty --working-directory site/src/templates"
               >> spawn "alacritty --working-directory site -e stack exec site watch"
@@ -150,18 +148,19 @@ promptedShfit = workspacePrompt myXPConfig $ windows . W.shift
 --------------------------------------------------------------------------------
 -- scratchpads
 
-scratchpads :: [NamedScratchpad]
-scratchpads = [ NS "htop" "alacritty -t htop -e /bin/htop" (title =? "htop")
-                  ( customFloating $ W.RationalRect (1/3) (1/37) (2/3) (2/3)) 
-              , NS "pfetch" "alacritty --hold -t pfetch -e /bin/pfetch" (title =? "pfetch")
-                  ( customFloating $ W.RationalRect (1/6) (1/37) (1/3) (1/3))
-              , NS "cava" "alacritty --hold -t cava -e /bin/cava" (title =? "cava")
-                  ( customFloating $ W.RationalRect (4/6) (1/37) (1/3) (1/3))
-              , NS "watch" "alacritty --working-directory site/ --hold -t watch -e stack exec site watch" (title =? "watch")
-                  ( customFloating $ W.RationalRect (0) (1/37) (1/3) (2/3))
-              , NS "term" "alacritty -t term" (title =? "term")
-                  ( customFloating $ W.RationalRect (1/3) (1/37) (2/3) (2/3))
+pads :: [NamedScratchpad]
+pads = [ NS "htop" "alacritty -t htop -e /bin/htop" (title =? "htop") htophook
+              , NS "pfetch" "alacritty --hold -t pfetch -e /bin/pfetch" (title =? "pfetch") pfetchhook
+              , NS "cava" "alacritty --hold -t cava -e /bin/cava" (title =? "cava") cavahook
+              , NS "watch" "alacritty --working-directory site/ --hold -t watch -e stack exec site watch" (title =? "watch") watchhook
+              , NS "term" "alacritty -t term" (title =? "term") termhook
               ]
+                where htophook = ( customFloating $ rr (1/3) (1/37) (2/3) (2/3)) 
+                      pfetchhook = ( customFloating $ rr (1/6) (1/37) (1/3) (1/3))
+                      cavahook = ( customFloating $ rr (4/6) (1/37) (1/3) (1/3))
+                      watchhook = ( customFloating $ rr (0) (1/37) (1/3) (2/3))
+                      termhook = ( customFloating $ rr (1/3) (1/37) (2/3) (2/3))
+                      rr = W.RationalRect
 --------------------------------------------------------------------------------
 -- keys
 
@@ -171,11 +170,11 @@ workspaceKeys = [xK_1..xK_9] ++ [xK_0]
 keys' conf@(XConfig {XMonad.modMask = modMask}) = M.fromList $ 
   [
   -- scratchpads and prompts
-    ((modMask .|. mod1Mask   , xK_t), namedScratchpadAction scratchpads "htop")
-  , ((modMask .|. mod1Mask   , xK_space), namedScratchpadAction scratchpads "term")
-  , ((modMask .|. mod1Mask   , xK_f), namedScratchpadAction scratchpads "pfetch")
-  , ((modMask .|. mod1Mask   , xK_c), namedScratchpadAction scratchpads "cava")
-  , ((modMask .|. mod1Mask   , xK_w), namedScratchpadAction scratchpads "watch")
+    ((modMask .|. mod1Mask   , xK_t), namedScratchpadAction pads "htop")
+  , ((modMask                , xK_space), namedScratchpadAction pads "term")
+  , ((modMask .|. mod1Mask   , xK_f), namedScratchpadAction pads "pfetch")
+  , ((modMask .|. mod1Mask   , xK_c), namedScratchpadAction pads "cava")
+  , ((modMask .|. mod1Mask   , xK_w), namedScratchpadAction pads "watch")
 
   -- programs
   , ((modMask              , xK_Return), spawn "alacritty" )
@@ -204,7 +203,7 @@ keys' conf@(XConfig {XMonad.modMask = modMask}) = M.fromList $
   , ((modMask              , xK_i),      sendMessage MirrorExpand)
 
   -- floating
-  , ((modMask              , xK_space),  withFocused $ windows . W.sink)
+  , ((modMask .|. shiftMask, xK_t),      withFocused $ windows . W.sink)
 
   , ((modMask              , xK_Up   ),  withFocused (keysMoveWindow (0  , -10)))
   , ((modMask              , xK_Down ),  withFocused (keysMoveWindow (0  , 10)))
