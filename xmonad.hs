@@ -11,6 +11,10 @@ import           XMonad.Actions.TopicSpace
 import           XMonad.Hooks.DynamicLog
 import           XMonad.Hooks.ManageDocks
 import           XMonad.Hooks.ManageHelpers
+
+import           XMonad.Layout.NoFrillsDecoration
+import           XMonad.Layout.Gaps
+import           XMonad.Layout.Spacing
 import           XMonad.Layout.NoBorders
 import           XMonad.Layout.ResizableTile
 import           XMonad.Layout.Named
@@ -41,7 +45,7 @@ main = do
               , ppTitle = xmobarColor "#C4C4C4" "" . shorten 50
               , ppCurrent = xmobarColor "#3579A8" "" . wrap "[" "]"
               }
-    , borderWidth = 2
+    , borderWidth = 0
     , normalBorderColor = normalBorderColor'
     , focusedBorderColor = focusedBorderColor'
     , modMask = modMask'
@@ -81,12 +85,43 @@ manageHooks = namedScratchpadManageHook pads <+> composeOne
 
 --------------------------------------------------------------------------------
 -- layouts
--- {{{
-myLayout = avoidStruts $ named "[]=" (smartBorders tiled) 
-                     ||| named "TTT" (smartBorders (Mirror tiled)) 
-                     ||| named "[ ]" (noBorders Full)
+myLayout = tiled ||| mirrorTiled ||| full
   where
-    tiled = ResizableTall 1 (2/100) (1/2) []
+    tiled = named "[]="
+      $ avoidStruts
+      $ addTopBar
+      $ myGaps
+      $ mySpacing
+      $ ResizableTall 1 (2/100) (1/2) []
+    mirrorTiled = named "TTT"
+      $ avoidStruts
+      $ addTopBar
+      $ myGaps
+      $ mySpacing
+      $ Mirror $ ResizableTall 1 (2/100) (1/2) []
+    full = named "[ ]"
+      $ noBorders Full
+    addTopBar = noFrillsDeco shrinkText barTheme
+    myGaps = gaps [(U, 10), (D, 10), (L, 10), (R, 10)]
+    mySpacing = spacing 10
+    barTheme =
+        def
+          { fontName = font
+          , inactiveBorderColor = black
+          , inactiveColor = black
+          , inactiveTextColor = black
+          , activeBorderColor = purple
+          , activeColor = purple
+          , activeTextColor = purple
+          , urgentTextColor = purple
+          , urgentBorderColor = purple
+          , decoHeight = decorationHeight
+          }
+        where
+          black = "#282828"
+          purple = "#8f3f71"
+          decorationHeight = 7
+          font = "xft:monospace:size=10" -- doesn't matter because of `shrinkText`- {{{
 -- }}}
 
 --------------------------------------------------------------------------------
