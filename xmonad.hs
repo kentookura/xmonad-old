@@ -33,7 +33,8 @@ main = do
   xmproc <- spawnPipe "xmobar /home/kento/.xmonad/xmobar"
   checkTopicConfig myTopics myTopicConfig
   xmonad $ docks defaultConfig
-    { layoutHook = spacingRaw True (Border 0 0 0 0) True (Border 10 10 5 5) True myLayout
+    { layoutHook = 
+        spacingRaw True (Border 0 0 0 0) True (Border 10 10 5 5) True myLayout
     , XMonad.workspaces = myTopics
     , logHook = dynamicLogWithPP xmobarPP
               { ppOutput = hPutStrLn xmproc
@@ -108,7 +109,7 @@ myTopicConfig :: TopicConfig
 myTopicConfig = def
   -- associate directory with topic
   { topicDirs = M.fromList
-    [ ("none", "")
+    [ ("none", "./")
     , ("config", ".config")
     , ("uni", "uni")
     , ("site", "site")
@@ -124,7 +125,8 @@ myTopicConfig = def
     , ("cv",     spawn "zathura doc/cv/output/resume.pdf" 
               >> spawn "alacritty --working-directory doc/cv/markdown/"
               >> spawn "alacritty -e vim doc/cv/markdown/resume.md")
-    , ("uni",    spawn "alacritty -e abduco -a uni-session" )
+    , ("uni",    spawn "alacritty --working-directory uni -e abduco -A uni-session dvtm"
+              >> spawn "alacritty --working-directory uni -e ranger")
     , ("site",   spawn "alacritty --working-directory site/src"
               >> spawn "alacritty --working-directory site/src/templates"
               >> spawn "qutebrowser http://localhost:8000")
@@ -187,7 +189,7 @@ keys' conf@(XConfig {XMonad.modMask = modMask}) = M.fromList $
   , ((modMask .|. mod1Mask   , xK_w),     namedScratchpadAction pads "watch")
 
   -- programs
-  , ((modMask              , xK_Return), spawn "alacritty" )
+  , ((modMask              , xK_Return), spawnShell )
   , ((modMask              , xK_d),      spawn "dmenu_run")
   , ((modMask              , xK_w),      spawn "qutebrowser")
   , ((modMask              , xK_r),      spawn "alacritty -e ranger")
@@ -235,12 +237,6 @@ keys' conf@(XConfig {XMonad.modMask = modMask}) = M.fromList $
   , ((modMask              , xK_g),      promptedGoto)
   , ((modMask .|. shiftMask, xK_g),      promptedShfit)]
   ++
-  [ ((modMask              , k),         switchNthLastFocused myTopicConfig i) 
-    | (i, k) <- zip [1..] workspaceKeys] 
-  ++ 
-  [ ((modMask .|. shiftMask, k),         shiftNthLastFocused i) 
-    | (i, k) <- zip [1..] workspaceKeys]
-  ++ 
   -- screens
   [((m .|. modMask, key), f sc)
     | (key, sc) <- zip [xK_m, xK_comma, xK_period] [0..]
@@ -251,5 +247,5 @@ myMouseBindings (XConfig {XMonad.modMask = modMask}) = M.fromList
   [ ((modMask,               button1), \w -> XMonad.Operations.focus w >> mouseMoveWindow w )
   , ((modMask .|. shiftMask, button1), \w -> XMonad.Operations.focus w >> Flex.mouseResizeWindow w )
   ]
-  -- }}}
-  -- vim:foldmethod=marker
+-- }}}
+-- vim:foldmethod=marker
