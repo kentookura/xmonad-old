@@ -1,4 +1,5 @@
 import qualified Data.Map as M
+import           Data.List (isPrefixOf)
 import           System.Exit
 import           XMonad
 import           XMonad.StackSet
@@ -9,6 +10,7 @@ import           XMonad.Actions.PhysicalScreens
 import           XMonad.Actions.TopicSpace
 import           XMonad.Hooks.DynamicLog
 import           XMonad.Hooks.ManageDocks
+import           XMonad.Hooks.ManageHelpers
 import           XMonad.Layout.NoBorders
 import           XMonad.Layout.ResizableTile
 import           XMonad.Layout.Named
@@ -43,7 +45,7 @@ main = do
     , modMask = modMask'
     , keys = keys'
     , mouseBindings = myMouseBindings
-    , manageHook = namedScratchpadManageHook scratchpads
+    , manageHook = manageHooks
     }
 
 --------------------------------------------------------------------------------
@@ -55,7 +57,9 @@ focusedBorderColor' = "#8f3f71"
 --------------------------------------------------------------------------------
 -- layouts
 
-myLayout = avoidStruts $ named "[]=" (smartBorders tiled) ||| named "TTT" (smartBorders (Mirror tiled)) ||| named "[M]" (noBorders Full)
+myLayout = avoidStruts $ named "[]=" (smartBorders tiled) 
+                     ||| named "TTT" (smartBorders (Mirror tiled)) 
+                     ||| named "[M]" (noBorders Full)
   where
     tiled = ResizableTall 1 (2/100) (1/2) []
 
@@ -74,6 +78,11 @@ myXPConfig = greenXPConfig
   , position = Bottom
   , height = 25
   }
+
+--------------------------------------------------------------------------------
+-- hooks
+manageHooks = namedScratchpadManageHook scratchpads <+> composeOne
+  [ ("uni" `isPrefixOf`) <$> title -?> doShift "uni" ]
 
 --------------------------------------------------------------------------------
 -- topics
