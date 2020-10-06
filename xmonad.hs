@@ -1,13 +1,25 @@
+{-
+                                                                  _/   
+   _/    _/  _/_/_/  _/_/      _/_/    _/_/_/      _/_/_/    _/_/_/    
+    _/_/    _/    _/    _/  _/    _/  _/    _/  _/    _/  _/    _/     
+ _/    _/  _/    _/    _/  _/    _/  _/    _/  _/    _/  _/    _/      
+_/    _/  _/    _/    _/    _/_/    _/    _/    _/_/_/    _/_/_/       
+
+-}                                                                      
+                                                                       
 import qualified Data.Map as M
 import           Data.List (isPrefixOf)
 import           System.Exit
+
 import           XMonad
 import           XMonad.StackSet
 import           XMonad.Operations
+
 import qualified XMonad.Actions.FlexibleResize as Flex
 import           XMonad.Actions.FloatKeys
 import           XMonad.Actions.PhysicalScreens
 import           XMonad.Actions.TopicSpace
+
 import           XMonad.Hooks.DynamicLog
 import           XMonad.Hooks.ManageDocks
 import           XMonad.Hooks.ManageHelpers
@@ -15,14 +27,20 @@ import           XMonad.Hooks.ManageHelpers
 import           XMonad.Layout.NoFrillsDecoration
 import           XMonad.Layout.Gaps
 import           XMonad.Layout.Spacing
+import           XMonad.Layout.Simplest
 import           XMonad.Layout.NoBorders
 import           XMonad.Layout.ResizableTile
 import           XMonad.Layout.Named
 import           XMonad.Layout.Spacing
+import           XMonad.Layout.SubLayouts
+import           XMonad.Layout.Tabbed
+import           XMonad.Layout.WindowNavigation
+
 import           XMonad.ManageHook
 import           XMonad.Prompt
 import           XMonad.Prompt.Workspace
 import           XMonad.StackSet as W
+
 import           XMonad.Util.EZConfig(additionalKeys)
 import           XMonad.Util.NamedScratchpad
 import           XMonad.Util.Run(spawnPipe)
@@ -37,8 +55,8 @@ main = do
   xmproc <- spawnPipe "xmobar /home/kento/.xmonad/xmobar"
   checkTopicConfig myTopics myTopicConfig
   xmonad $ docks defaultConfig
-    { layoutHook = 
-        spacingRaw True (Border 0 0 0 0) True (Border 10 10 5 5) True myLayout
+    { layoutHook = myLayout
+    , focusFollowsMouse = False
     , XMonad.workspaces = myTopics
     , logHook = dynamicLogWithPP xmobarPP
               { ppOutput = hPutStrLn xmproc
@@ -46,8 +64,8 @@ main = do
               , ppCurrent = xmobarColor "#3579A8" "" . wrap "[" "]"
               }
     , borderWidth = 0
-    , normalBorderColor = normalBorderColor'
-    , focusedBorderColor = focusedBorderColor'
+    , normalBorderColor = black
+    , focusedBorderColor = purple
     , modMask = modMask'
     , keys = keys'
     , mouseBindings = myMouseBindings
@@ -59,12 +77,40 @@ main = do
 -- looks
 -- {{{
 
-normalBorderColor' = "#282828"
-focusedBorderColor' = "#8f3f71"
+myFont = "xft:Dina:bold:size=10:antialias=true" 
+black = "#282828"
+purple = "#8f3f71"
+
+myTabTheme = def
+    { fontName              = "Dina"
+    , activeColor           = purple
+    , inactiveColor         = black
+    , activeBorderColor     = black
+    , inactiveBorderColor   = black
+    , activeTextColor       = black
+    , inactiveTextColor     = black
+    }
+
+barTheme =
+    def
+      { fontName = font
+      , inactiveBorderColor = black
+      , inactiveColor = black
+      , inactiveTextColor = black
+      , activeBorderColor = purple
+      , activeColor = purple
+      , activeTextColor = purple
+      , urgentTextColor = purple
+      , urgentBorderColor = purple
+      , decoHeight = decorationHeight
+      }
+    where
+      decorationHeight = 7
+      font = "xft:monospace:size=10" -- doesn't matter because of `shrinkText`- {{{
 
 myXPConfig :: XPConfig
 myXPConfig = greenXPConfig 
-  { font = "xft:Dina:bold:size=10:antialias=true" 
+  { font = myFont
   , bgColor = "#282828"
   , fgColor = "#8f3f71"
   , bgHLight = "#665c54"
@@ -85,8 +131,15 @@ manageHooks = namedScratchpadManageHook pads <+> composeOne
 
 --------------------------------------------------------------------------------
 -- layouts
-myLayout = tiled ||| mirrorTiled ||| full
+myLayout = tiled ||| mirrorTiled ||| full -- ||| sub
   where
+--    sub = avoidStruts
+--      $ windowNavigation
+--      $ addTopBar
+--      $ myGaps
+--      $ addTabs shrinkText myTabTheme
+--      $ mySpacing
+--      $ subTabbed ResizableTall 1 (2/100) (1/2) []
     tiled = named "[]="
       $ avoidStruts
       $ addTopBar
@@ -104,24 +157,6 @@ myLayout = tiled ||| mirrorTiled ||| full
     addTopBar = noFrillsDeco shrinkText barTheme
     myGaps = gaps [(U, 10), (D, 10), (L, 10), (R, 10)]
     mySpacing = spacing 10
-    barTheme =
-        def
-          { fontName = font
-          , inactiveBorderColor = black
-          , inactiveColor = black
-          , inactiveTextColor = black
-          , activeBorderColor = purple
-          , activeColor = purple
-          , activeTextColor = purple
-          , urgentTextColor = purple
-          , urgentBorderColor = purple
-          , decoHeight = decorationHeight
-          }
-        where
-          black = "#282828"
-          purple = "#8f3f71"
-          decorationHeight = 7
-          font = "xft:monospace:size=10" -- doesn't matter because of `shrinkText`- {{{
 -- }}}
 
 --------------------------------------------------------------------------------
@@ -137,6 +172,7 @@ myTopics = [ "none"
            , "site"
            , "cv"
            , "docs"
+           , "wiki"
            , "hsk"
            , "web"]
 
@@ -149,6 +185,8 @@ myTopicConfig = def
     , ("uni", "uni")
     , ("site", "site")
     , ("docs", "doc")
+    , ("hsk", "hsk")
+    , ("wiki", "wiki")
     , ("xm", ".xmonad")
     , ("cv", "doc/cv")
     , ("web", "dl")
@@ -165,8 +203,8 @@ myTopicConfig = def
     , ("site",   spawn "alacritty --working-directory site/src"
               >> spawn "alacritty --working-directory site/src/templates"
               >> spawn "qutebrowser http://localhost:8000")
-    , ("xm",     spawn "alacritty -e vim .xmonad/xmonad.hs"
-              >> spawnShell)
+    , ("xm",     spawn "alacritty -e vim .xmonad/xmonad.hs")
+    , ("wiki",   spawn "alacritty -e vim wiki/index.md")
     ]
   }
 
@@ -217,15 +255,15 @@ workspaceKeys = [xK_1..xK_9] ++ [xK_0]
 keys' conf@(XConfig {XMonad.modMask = modMask}) = M.fromList $ 
   [
   -- scratchpads and prompts
-    ((modMask .|. mod1Mask   , xK_t),     namedScratchpadAction pads "htop")
-  , ((modMask                , xK_space), namedScratchpadAction pads "term")
+    ((modMask                , xK_space), namedScratchpadAction pads "term")
+  , ((modMask .|. mod1Mask   , xK_t),     namedScratchpadAction pads "htop")
   , ((modMask .|. mod1Mask   , xK_f),     namedScratchpadAction pads "pfetch")
   , ((modMask .|. mod1Mask   , xK_c),     namedScratchpadAction pads "cava")
   , ((modMask .|. mod1Mask   , xK_w),     namedScratchpadAction pads "watch")
 
   -- programs
   , ((modMask              , xK_Return), spawnShell )
-  , ((modMask              , xK_d),      spawn "dmenu_run")
+  , ((modMask              , xK_d),      spawn "rofi -show drun -theme gruvbox-dark-hard")
   , ((modMask              , xK_w),      spawn "qutebrowser")
   , ((modMask              , xK_r),      spawn "alacritty -e ranger")
 
@@ -243,6 +281,18 @@ keys' conf@(XConfig {XMonad.modMask = modMask}) = M.fromList $
   , ((modMask .|. shiftMask, xK_j),      windows W.swapDown)
   , ((modMask .|. shiftMask, xK_k),      windows W.swapUp)
 
+
+  , ((modMask .|. mod1Mask, xK_h), sendMessage $ pullGroup L)
+  , ((modMask .|. mod1Mask, xK_l), sendMessage $ pullGroup R)
+  , ((modMask .|. mod1Mask, xK_k), sendMessage $ pullGroup U)
+  , ((modMask .|. mod1Mask, xK_j), sendMessage $ pullGroup D)
+
+  , ((modMask .|. mod1Mask, xK_m), withFocused (sendMessage . MergeAll))
+  , ((modMask .|. mod1Mask, xK_u), withFocused (sendMessage . UnMerge))
+
+  , ((modMask .|. mod1Mask, xK_g), onGroup W.focusUp')
+  , ((modMask .|. mod1Mask, xK_l), onGroup W.focusDown')
+
   -- resizing
   , ((modMask              , xK_h), sendMessage Shrink)
   , ((modMask              , xK_l), sendMessage Expand)
@@ -250,17 +300,17 @@ keys' conf@(XConfig {XMonad.modMask = modMask}) = M.fromList $
   , ((modMask              , xK_i), sendMessage MirrorExpand)
 
   -- floating
-  , ((modMask .|. shiftMask, xK_t), withFocused $ windows . W.sink)
+  , ((modMask .|. shiftMask, xK_t    ), withFocused $ windows . W.sink)
 
-  , ((modMask              , xK_Up   ),  withFocused (keysMoveWindow (0  , -10)))
-  , ((modMask              , xK_Down ),  withFocused (keysMoveWindow (0  , 10)))
-  , ((modMask              , xK_Right),  withFocused (keysMoveWindow (10 ,  0)))
-  , ((modMask              , xK_Left ),  withFocused (keysMoveWindow (-10,  0)))
+  , ((modMask              , xK_Up   ), withFocused (keysMoveWindow (0  , -10)))
+  , ((modMask              , xK_Down ), withFocused (keysMoveWindow (0  , 10)))
+  , ((modMask              , xK_Right), withFocused (keysMoveWindow (10 ,  0)))
+  , ((modMask              , xK_Left ), withFocused (keysMoveWindow (-10,  0)))
 
-  , ((modMask .|. shiftMask, xK_Up   ),  withFocused (keysResizeWindow (0  , 10) (0, 1)))
-  , ((modMask .|. shiftMask, xK_Down ),  withFocused (keysResizeWindow (0  ,-10) (0, 1)))
-  , ((modMask .|. shiftMask, xK_Right),  withFocused (keysResizeWindow (10 ,  0) (0, 0)))
-  , ((modMask .|. shiftMask, xK_Left ),  withFocused (keysResizeWindow (-10,  0) (0, 0)))
+  , ((modMask .|. shiftMask, xK_Up   ), withFocused (keysResizeWindow (0  , 10) (0, 1)))
+  , ((modMask .|. shiftMask, xK_Down ), withFocused (keysResizeWindow (0  ,-10) (0, 1)))
+  , ((modMask .|. shiftMask, xK_Right), withFocused (keysResizeWindow (10 ,  0) (0, 0)))
+  , ((modMask .|. shiftMask, xK_Left ), withFocused (keysResizeWindow (-10,  0) (0, 0)))
 
   -- util
   , ((modMask .|. shiftMask, xK_c),      kill)  
