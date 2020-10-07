@@ -51,13 +51,11 @@ Here are the keybindings:
 | Mod4 + Shift | q      | exit xmonad                          |
 
 ### workspaces
-| :-----------: | :-: | :------------------: |
 | Mod4          | g   | promptedGoto         |
 | Mod4 + Shift  | g   | promptedShift        |
 | Mod4          | a   | default topic action |
 
 ### scratchpads
-| :--------: | :---: | :----------------------: |
 | Mod4       | space | terminal scratchpad      |
 | Mod4 + alt | w     | hakyll server scratchpad |
 | Mod4 + alt | t     | htop  scratchpad         |
@@ -65,7 +63,6 @@ Here are the keybindings:
 | Mod4 + alt | c     | cava scratchpad          |
 
 ### floating windows
-| :--:         | :--------: | :----------------------: |
 | Mod4         | arrow keys | move window              |
 | Mod4 + shift | arrow keys | resize window            |
 | Mod4         | w          | hakyll server scratchpad |
