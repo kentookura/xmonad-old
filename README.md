@@ -52,7 +52,7 @@ Here are the keybindings:
 
 ### workspaces
 | modifiers    | key    | action               |
-| :----------: | :----: | :----------------- : |
+| :----------: | :----: | :------------------: |
 | Mod4         | g      | promptedGoto         |
 | Mod4 + Shift | g      | promptedShift        |
 | Mod4         | a      | default topic action |
