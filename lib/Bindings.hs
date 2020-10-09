@@ -18,6 +18,7 @@ import           XMonad.Actions.FloatKeys
 import           XMonad.Actions.PhysicalScreens
 import           XMonad.Actions.TopicSpace
 import           XMonad.Hooks.ManageDocks
+import           XMonad.Layout.LayoutCombinators
 import           XMonad.Layout.ResizableTile
 import           XMonad.Layout.SubLayouts
 import           XMonad.Layout.Tabbed
@@ -47,9 +48,6 @@ promptedGoto = workspacePrompt myXPConfig goto
 promptedShfit :: X ()
 promptedShfit = workspacePrompt myXPConfig $ windows . W.shift
 
---myKeys :: XConfig Layout -> M.Map (KeyMask, Button) (Window -> X())
---myKeys XConfig{} = M.fromList
-
 myKeys conf@(XConfig {XMonad.modMask = modMask}) = M.fromList $ 
   [
   -- scratchpads and prompts
@@ -70,6 +68,7 @@ myKeys conf@(XConfig {XMonad.modMask = modMask}) = M.fromList $
 
   -- layout
   , ((modMask              , xK_Tab),    sendMessage NextLayout)
+  , ((modMask              , xK_f),      sendMessage $ JumpToLayout "Full")
   , ((modMask              , xK_t),      setLayout $ XMonad.layoutHook conf)
   , ((modMask              , xK_b),      sendMessage ToggleStruts)
   , ((modMask .|. shiftMask, xK_h),      sendMessage (IncMasterN( 1)))

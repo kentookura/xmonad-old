@@ -4,7 +4,7 @@ module Layouts
 
 where
 
-import Themes
+import Themes (barTheme)
 
 import           XMonad
 
@@ -20,8 +20,10 @@ import           XMonad.Layout.Named
 import           XMonad.Layout.Spacing
 import           XMonad.Layout.SubLayouts
 import           XMonad.Layout.Tabbed
+import           XMonad.Layout.WindowNavigation
 
-myLayout = tiled ||| mirrorTiled ||| full 
+
+myLayout = tiled ||| mirrorTiled ||| full ||| flex
   where
     tiled = named "[]="
       $ avoidStruts
@@ -41,3 +43,12 @@ myLayout = tiled ||| mirrorTiled ||| full
     addTopBar = noFrillsDeco shrinkText barTheme
     myGaps = gaps [(U, 10), (D, 10), (L, 10), (R, 10)]
     mySpacing = spacing 10
+    flex = named "[]^"
+      $ avoidStruts
+      $ windowNavigation
+      $ addTopBar
+      $ myGaps
+      $ addTabs shrinkText barTheme
+      $ mySpacing
+      $ subLayout [] Simplest
+      $ ResizableTall 1 (1/50) (2/3) []

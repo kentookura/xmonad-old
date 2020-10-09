@@ -20,15 +20,13 @@ import           Data.List (isPrefixOf)
 import           XMonad
 
 import           XMonad.Actions.TopicSpace
-
 import           XMonad.Hooks.DynamicLog
 import           XMonad.Hooks.ManageDocks
 import           XMonad.Hooks.ManageHelpers
-
 import           XMonad.ManageHook
 import           XMonad.StackSet as W
-
 import           XMonad.Util.Run(spawnPipe)
+
 
 import           System.IO
 
@@ -43,9 +41,11 @@ main = do
     , focusFollowsMouse = False
     , XMonad.workspaces = myTopics
     , logHook = dynamicLogWithPP xmobarPP
-              { ppOutput = hPutStrLn xmproc
-              , ppTitle = xmobarColor "#C4C4C4" "" . shorten 50
+              { ppOutput  = hPutStrLn xmproc
+              , ppTitle   = xmobarColor "#C4C4C4" "" . shorten 50
               , ppCurrent = xmobarColor "#3579A8" "" . wrap "[" "]"
+              , ppSep     = xmobarColor purple  "" " | "
+              , ppSort    = (. namedScratchpadFilterOutWorkspace) <$> ppSort def
               }
     , borderWidth = 0
     , normalBorderColor = black
@@ -53,9 +53,21 @@ main = do
     , modMask = mod4Mask
     , keys = myKeys
     , mouseBindings = myMouseBindings
-    , manageHook = manageHooks
+    , manageHook = myManageHook
     }
 
 --------------------------------------------------------------------------------
-manageHooks = namedScratchpadManageHook pads <+> composeOne
-  [ ("uni" `isPrefixOf`) <$> title -?> doShift "uni" ]
+myManageHook = composeAll
+  [ myNSManageHook
+  , dialogHook
+  , thunbirHook
+  ]
+
+myNSManageHook :: ManageHook
+myNSManageHook = namedScratchpadManageHook pads
+
+dialogHook = composeOne
+  [ isDialog -?> doFloat ]
+
+thunbirHook = composeAll
+  [ className =? "Msgcompose" --> doFloat ]
