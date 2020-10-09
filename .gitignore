@@ -1,1 +1,6 @@
-*
+*.hi
+*.o
+prompt-history
+xpm
+xmonad.errors
+xmonad-x86_64-linux
