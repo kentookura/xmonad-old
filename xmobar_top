@@ -1,0 +1,73 @@
+Config { font             = "xft:Dina:size=10:regular:antialias=true"
+       , additionalFonts  = [ "xft:Mononoki Nerd Font:pixelsize=26:antialias=true:hinting=true" ]
+       , iconRoot         = "/home/kento/.xmonad/xpm/" -- default: "."
+       , iconOffset       = -1
+       , bgColor          = "#282828"
+       , fgColor          = "#665c54"
+       , position         = Top
+       , border           = NoBorder
+       , borderColor      = "#665c54"
+       , sepChar          = "%"   -- delineator between plugin names and straight text
+       , alignSep         = "}{"  -- separator between left-right alignment
+       , template         = "%StdinReader% }{ %battery% | %multicpu% | %coretemp% | %memory% | %dynnetwork%  %LOWW% | %date% || %kbd% "
+       , lowerOnStart     = True    -- send to bottom of window stack on start
+       , hideOnStart      = False   -- start with window unmapped (hidden)
+       , allDesktops      = True    -- show on all desktops
+       , overrideRedirect = True    -- set the Override Redirect flag (Xlib)
+       , pickBroadest     = False   -- choose widest display (multi-monitor)
+       , persistent       = True    -- enable/disable hiding (True = disabled)
+       , commands         = 
+            [ Run Weather "LOWW" [ "--template", "<skyCondition> | <fc=#4682B4><tempC></fc>°C | <fc=#4682B4><rh></fc>% | <fc=#4682B4><pressure></fc>hPa"
+                                 ] 36000
+            , Run DynNetwork     [ "--template" , "<dev>: <tx>kB/s|<rx>kB/s"
+                                 , "--Low"      , "100"       -- units: B/s
+                                 , "--High"     , "5000"       -- units: B/s
+                                 , "--low"      , "#79740e"
+                                 , "--normal"   , "#d79921"
+                                 , "--high"     , "#9d0006"
+                                 ] 10
+            , Run MultiCpu       [ "--template" , "Cpu: <total0>%|<total1>%"
+                                 , "--Low"      , "50"         -- units: %
+                                 , "--High"     , "85"         -- units: %
+                                 , "--low"      , "#79740e"
+                                 , "--normal"   , "#d79921"
+                                 , "--high"     , "#9d0006"
+                                 ] 10
+            , Run CoreTemp       [ "--template" , "Temp: <core0>°C|<core1>°C"
+                                 , "--Low"      , "70"        -- units: °C
+                                 , "--High"     , "80"        -- units: °C
+                                 , "--low"      , "#79740e"
+                                 , "--normal"   , "#d79921"
+                                 , "--high"     , "#9d0006"
+                                 ] 50
+            , Run Memory         [ "--template" ,"Mem: <usedratio>%"
+                                 , "--Low"      , "20"        -- units: %
+                                 , "--High"     , "90"        -- units: %
+                                 , "--low"      , "#79740e"
+                                 , "--normal"   , "#d79921"
+                                 , "--high"     , "#9d0006"
+                                 ] 10
+            , Run Battery        [ "--template" , "Batt: <acstatus>"
+                                 , "--Low"      , "10"        -- units: %
+                                 , "--High"     , "80"        -- units: %
+                                 , "--low"      , "#9d0006"
+                                 , "--normal"   , "#d79921"
+                                 , "--high"     , "#79740e"
+                                 , "--" -- battery specific options
+                                           -- discharging status
+                                           , "-o"	, "<left>% (<timeleft>)"
+                                           -- AC "on" status
+                                           , "-O"	, "<fc=#076678>Charging</fc>"
+                                           -- charged status
+                                           , "-i"	, "<fc=#98971a>Charged</fc>"
+                                 ] 50
+
+            --   (%F = y-m-d date, %a = day of week, %T = h:m:s time)
+            , Run Date           "<fc=#ABABAB>%F (%a) %T</fc>" "date" 10
+
+      , Run StdinReader
+            , Run Kbd            [ ("us(dvorak)" , "<fc=#076678>DV</fc>")
+                                 , ("us"         , "<fc=#9d0006>US</fc>")
+                                 ]
+            ]
+       }
