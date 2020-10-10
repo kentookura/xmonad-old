@@ -16,7 +16,9 @@ import Log
 
 import           XMonad.Util.NamedScratchpad
 import qualified Data.Map as M
+import           Data.IORef
 import           Data.List (isPrefixOf)
+import qualified Data.Set as S
 
 import           XMonad
 
@@ -34,16 +36,15 @@ import           XMonad.Hooks.SetWMName
 import           System.IO
 
 --------------------------------------------------------------------------------
--- main
--- xmproc <- spawnPipe "xmobar /home/kento/.xmonad/xmobar_top" "xmobarTop"
 
 main = do
   checkTopicConfig myTopics myTopicConfig
+  toggleFadeSet <- newIORef S.empty
   xmonad $ docks defaultConfig
-    { layoutHook = myLayout
-    , focusFollowsMouse = False
-    , XMonad.workspaces = myTopics
-    , logHook = myLogHook
+    { layoutHook         = myLayout
+    , focusFollowsMouse  = False
+    , XMonad.workspaces  = myTopics
+    , logHook            = myLogHook <> myFadeHook toggleFadeSet
     , borderWidth        = 0
     , normalBorderColor  = black
     , focusedBorderColor = purple
@@ -57,11 +58,12 @@ main = do
 
 myStartupHook :: X ()
 myStartupHook = do
-  spawnNamedPipe "xmobar ~/.xmonad/xmobar_top" "xmobarTop"
-  spawnNamedPipe "xmobar ~/.xmonad/xmobar_bot" "xmobarBot"
-  setWMName "xmonad"
+  spawnNamedPipe "xmobar ~/.xmonad/xmobar/xmobar_top" "xmobarTop"
+  spawnNamedPipe "xmobar ~/.xmonad/xmobar/xmobar_bot" "xmobarBot"
 
 --------------------------------------------------------------------------------
+ 
+myManageHook :: ManageHook
 myManageHook = composeAll
   [ myNSManageHook
   , dialogHook

@@ -1,4 +1,5 @@
 *.hi
+xbm
 *.o
 prompt-history
 xpm
