@@ -3,7 +3,7 @@ module Bindings
   , myMouseBindings
   )
 where 
-
+--{{{
 import Topics
 import Themes
 import Scratchpads
@@ -29,24 +29,7 @@ import           XMonad.StackSet
 import           XMonad.StackSet as W
 import           XMonad.Util.EZConfig(additionalKeys)
 import           XMonad.Util.NamedScratchpad
-
-spawnShell :: X ()
-spawnShell = currentTopicDir myTopicConfig >>= spawnShellIn
-
-spawnShellIn :: Dir -> X ()
-spawnShellIn dir = spawn $ "alacritty --working-directory " ++ dir
-
-spawnCmdIn :: Dir -> String -> X ()
-spawnCmdIn dir cmd = spawn $ "alacritty --working-directory " ++ dir ++ " -e " ++ cmd
-
-goto :: Topic -> X ()
-goto = switchTopic myTopicConfig
-
-promptedGoto :: X ()
-promptedGoto = workspacePrompt myXPConfig goto
-
-promptedShfit :: X ()
-promptedShfit = workspacePrompt myXPConfig $ windows . W.shift
+--}}}
 
 myKeys conf@(XConfig {XMonad.modMask = modMask}) = M.fromList $ 
   [
@@ -54,14 +37,14 @@ myKeys conf@(XConfig {XMonad.modMask = modMask}) = M.fromList $
     ((modMask                , xK_space), namedScratchpadAction pads "term")
   , ((modMask .|. mod1Mask   , xK_t),     namedScratchpadAction pads "htop")
   , ((modMask .|. mod1Mask   , xK_f),     namedScratchpadAction pads "pfetch")
-
+  , ((modMask .|. mod1Mask   , xK_d),     namedScratchpadAction pads "discord")
   , ((modMask .|. mod1Mask   , xK_c),     namedScratchpadAction pads "cava")
   , ((modMask .|. mod1Mask   , xK_w),     namedScratchpadAction pads "watch")
 
   -- programs
   , ((modMask                 , xK_Return), spawnShell )
   , ((modMask .|. shiftMask   , xK_Return), spawn "alacritty")
-  , ((modMask                 , xK_d),      spawn "rofi -show drun -theme gruvbox-dark-hard")
+  , ((modMask                 , xK_d),      spawn "rofi -matching fuzzy -modi combi -show combi -combi-modi run, drun -theme gruvbox-dark-hard")
   , ((modMask                 , xK_w),      spawn "qutebrowser")
   , ((modMask                 , xK_r),      spawn "alacritty -e ranger")
   , ((controlMask .|. mod1Mask, xK_l),      spawn "lock")
@@ -136,3 +119,21 @@ myMouseBindings (XConfig {XMonad.modMask = modMask}) = M.fromList
   [ ((modMask,               button1), \w -> XMonad.Operations.focus w >> mouseMoveWindow w )
   , ((modMask .|. shiftMask, button1), \w -> XMonad.Operations.focus w >> Flex.mouseResizeWindow w )
   ]
+
+spawnShell :: X ()
+spawnShell = currentTopicDir myTopicConfig >>= spawnShellIn
+
+spawnShellIn :: Dir -> X ()
+spawnShellIn dir = spawn $ "alacritty --working-directory " ++ dir
+
+spawnCmdIn :: Dir -> String -> X ()
+spawnCmdIn dir cmd = spawn $ "alacritty --working-directory " ++ dir ++ " -e " ++ cmd
+
+goto :: Topic -> X ()
+goto = switchTopic myTopicConfig
+
+promptedGoto :: X ()
+promptedGoto = workspacePrompt myXPConfig goto
+
+promptedShfit :: X ()
+promptedShfit = workspacePrompt myXPConfig $ windows . W.shift
