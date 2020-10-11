@@ -24,25 +24,36 @@ myLogHook :: X ()
 myLogHook = do
   t <- getNamedPipe "xmobarTop"
   b <- getNamedPipe "xmobarBot"
-  dynamicLogWithPP botBarPP
+  dynamicLogWithPP $ botBarPP
+                   { ppOutput  = safePrintToPipe t
+                   , ppTitle   = xmobarColor white "" . shorten 50
+                   , ppVisible = xmobarColor white "" . wrap "" ""
+                   , ppSep     = xmobarColor purple  "" " | "
+                   , ppSort    = (. namedScratchpadFilterOutWorkspace) <$> ppSort def
+                   }
   dynamicLogWithPP $ topBarPP
-    { ppOutput = safePrintToPipe t
-    , ppTitle   = xmobarColor white "" . shorten 50
-    , ppVisible = xmobarColor white "" . wrap "" ""
-    , ppSep     = xmobarColor purple  "" " | "
-    , ppSort    = (. namedScratchpadFilterOutWorkspace) <$> ppSort def
-    }
+                   { ppOutput  = safePrintToPipe b
+                   , ppTitle   = xmobarColor white "" . shorten 50
+                   , ppVisible = xmobarColor white "" . wrap "" ""
+                   , ppSep     = xmobarColor purple  "" " | "
+                   , ppSort    = (. namedScratchpadFilterOutWorkspace) <$> ppSort def
+                   }
 
 topBarPP :: PP
 topBarPP = def
-          { ppTitle   = xmobarColor white "" . shorten 50
-          , ppCurrent = xmobarColor blue "" . wrap "[" "]"
-          , ppSep     = xmobarColor purple  "" " | "
-          , ppSort    = (. namedScratchpadFilterOutWorkspace) <$> ppSort def
-          }
+         { ppTitle   = xmobarColor white "" . shorten 50
+         , ppCurrent = xmobarColor blue "" . wrap "[" "]"
+         , ppSep     = xmobarColor purple  "" " | "
+         , ppSort    = (. namedScratchpadFilterOutWorkspace) <$> ppSort def
+         }
 
 botBarPP :: PP
 botBarPP = def
+         { ppTitle   = xmobarColor white "" . shorten 50
+         , ppCurrent = xmobarColor blue "" . wrap "[" "]"
+         , ppSep     = xmobarColor purple  "" " | "
+         , ppSort    = (. namedScratchpadFilterOutWorkspace) <$> ppSort def
+         }
 
 safePrintToPipe :: Maybe Handle -> String -> IO ()
 safePrintToPipe = maybe (\_ -> return ()) hPutStrLn

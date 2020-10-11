@@ -44,28 +44,27 @@ main = do
   xmonad 
     $ ewmh
     $ docks defaultConfig
-    { layoutHook         = myLayout
-    , focusFollowsMouse  = False
-    , clickJustFocuses   = False
-    , XMonad.workspaces  = myTopics
-    , logHook            = myLogHook <> myFadeHook toggleFadeSet
-    , borderWidth        = 0
-    , normalBorderColor  = black
-    , focusedBorderColor = purple
-    , modMask            = mod4Mask
-    , keys               = myKeys
-    , startupHook        = myStartupHook
-    , mouseBindings      = myMouseBindings
-    , manageHook         = myManageHook
-    }
+        { layoutHook         = myLayout
+        , focusFollowsMouse  = False
+        , clickJustFocuses   = False
+        , XMonad.workspaces  = myTopics
+        , logHook            = myLogHook <> myFadeHook toggleFadeSet
+        , borderWidth        = 0
+        , normalBorderColor  = black
+        , focusedBorderColor = purple
+        , modMask            = mod4Mask
+        , keys               = myKeys
+        , startupHook        = myStartupHook
+        , mouseBindings      = myMouseBindings
+        , manageHook         = myManageHook
+        }
 
+--------------------------------------------------------------------------------
 
 myStartupHook :: X ()
 myStartupHook = do
   spawnNamedPipe "xmobar ~/.xmonad/xmobar/xmobar_top" "xmobarTop"
   spawnNamedPipe "xmobar ~/.xmonad/xmobar/xmobar_bot" "xmobarBot"
-
---------------------------------------------------------------------------------
  
 myManageHook :: ManageHook
 myManageHook = composeAll

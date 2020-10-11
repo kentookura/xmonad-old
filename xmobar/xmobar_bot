@@ -9,7 +9,7 @@ Config { font             = "xft:Dina:size=10:regular:antialias=true"
        , borderColor      = "#665c54"
        , sepChar          = "%"   -- delineator between plugin names and straight text
        , alignSep         = "}{"  -- separator between left-right alignment
-       , template         = " }{ | <icon=cpu4.xbm/> %multicpu% | <icon=temp1.xbm/> %coretemp% |<icon=mem1.xbm/> %memory% | %dynnetwork%  || %kbd% "
+       , template         = "%StdinReader% }{ %dynnetwork% | <icon=cpu4.xbm/> %multicpu% | <icon=temp1.xbm/> %coretemp% |<icon=mem1.xbm/> %memory% || %kbd% "
        , lowerOnStart     = True    -- send to bottom of window stack on start
        , hideOnStart      = False   -- start with window unmapped (hidden)
        , allDesktops      = True    -- show on all desktops
@@ -39,7 +39,7 @@ Config { font             = "xft:Dina:size=10:regular:antialias=true"
                                  , "--high"     , "#9d0006"
                                  ] 50
 
-      , Run StdinReader
+            , Run StdinReader
             , Run Kbd            [ ("us(dvorak)" , "<fc=#076678>DV</fc>")
                                  , ("us"         , "<fc=#9d0006>US</fc>")
                                  ]

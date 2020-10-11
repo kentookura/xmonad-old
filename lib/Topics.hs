@@ -10,6 +10,7 @@ module Topics
   )
 
 where
+
 import           XMonad
 import           Themes
 import qualified Data.Map as M
@@ -61,6 +62,7 @@ myTopicConfig = def
     , ("xm",     spawn "alacritty -e vim .xmonad/xmonad.hs")
     ]
   }
+
 spawnShell :: X ()
 spawnShell = currentTopicDir myTopicConfig >>= spawnShellIn
 
