@@ -4,8 +4,8 @@ module Bindings
   )
 where 
 --{{{
-import Topics
 import Themes
+import Topics
 import Scratchpads
 
 import qualified Data.Map as M
@@ -18,6 +18,7 @@ import           XMonad.Actions.FloatKeys
 import           XMonad.Actions.PhysicalScreens
 import           XMonad.Actions.TopicSpace
 import           XMonad.Hooks.ManageDocks
+import           XMonad.Prompt.Workspace
 import           XMonad.Layout.LayoutCombinators
 import           XMonad.Layout.ResizableTile
 import           XMonad.Layout.SubLayouts
@@ -39,7 +40,7 @@ myKeys conf@(XConfig {XMonad.modMask = modMask}) = M.fromList $
   , ((modMask .|. mod1Mask   , xK_f),     namedScratchpadAction pads "pfetch")
   , ((modMask .|. mod1Mask   , xK_d),     namedScratchpadAction pads "discord")
   , ((modMask .|. mod1Mask   , xK_c),     namedScratchpadAction pads "cava")
-  , ((modMask .|. mod1Mask   , xK_w),     namedScratchpadAction pads "watch")
+  , ((modMask .|. mod1Mask   , xK_w),     namedScratchpadAction pads "wiki")
 
   -- programs
   , ((modMask                 , xK_Return), spawnShell )
@@ -51,7 +52,7 @@ myKeys conf@(XConfig {XMonad.modMask = modMask}) = M.fromList $
 
   -- layout
   , ((modMask              , xK_Tab),    sendMessage NextLayout)
-  , ((modMask              , xK_f),      sendMessage $ JumpToLayout "Full")
+  , ((modMask              , xK_f),      sendMessage $ JumpToLayout "[ ]")
   , ((modMask              , xK_t),      setLayout $ XMonad.layoutHook conf)
   , ((modMask              , xK_b),      sendMessage ToggleStruts)
   , ((modMask .|. shiftMask, xK_h),      sendMessage (IncMasterN( 1)))
@@ -103,12 +104,11 @@ myKeys conf@(XConfig {XMonad.modMask = modMask}) = M.fromList $
   -- topics
   , ((modMask              , xK_a),      currentTopicAction myTopicConfig)
   , ((modMask              , xK_g),      promptedGoto)
-  , ((modMask .|. shiftMask, xK_g),      promptedShfit)
+  , ((modMask .|. shiftMask, xK_g),      promptedShift)
 
   , ((shiftMask, xK_F2), spawn "pamixer -d 5")
   , ((shiftMask, xK_F2), spawn "pamixer -i 5")]
   ++
-
   -- screens
   [((m .|. modMask, key), f sc)
     | (key, sc) <- zip [xK_m, xK_comma, xK_period] [0..]
@@ -120,20 +120,3 @@ myMouseBindings (XConfig {XMonad.modMask = modMask}) = M.fromList
   , ((modMask .|. shiftMask, button1), \w -> XMonad.Operations.focus w >> Flex.mouseResizeWindow w )
   ]
 
-spawnShell :: X ()
-spawnShell = currentTopicDir myTopicConfig >>= spawnShellIn
-
-spawnShellIn :: Dir -> X ()
-spawnShellIn dir = spawn $ "alacritty --working-directory " ++ dir
-
-spawnCmdIn :: Dir -> String -> X ()
-spawnCmdIn dir cmd = spawn $ "alacritty --working-directory " ++ dir ++ " -e " ++ cmd
-
-goto :: Topic -> X ()
-goto = switchTopic myTopicConfig
-
-promptedGoto :: X ()
-promptedGoto = workspacePrompt myXPConfig goto
-
-promptedShfit :: X ()
-promptedShfit = workspacePrompt myXPConfig $ windows . W.shift

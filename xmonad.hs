@@ -25,6 +25,7 @@ import           XMonad
 import           XMonad.Actions.TopicSpace
 import           XMonad.Hooks.ManageDocks
 import           XMonad.Hooks.ManageHelpers
+import           XMonad.Hooks.EwmhDesktops
 import           XMonad.ManageHook
 import           XMonad.StackSet as W
 import           XMonad.Util.Run(spawnPipe)
@@ -40,9 +41,12 @@ import           System.IO
 main = do
   checkTopicConfig myTopics myTopicConfig
   toggleFadeSet <- newIORef S.empty
-  xmonad $ docks defaultConfig
+  xmonad 
+    $ ewmh
+    $ docks defaultConfig
     { layoutHook         = myLayout
     , focusFollowsMouse  = False
+    , clickJustFocuses   = False
     , XMonad.workspaces  = myTopics
     , logHook            = myLogHook <> myFadeHook toggleFadeSet
     , borderWidth        = 0

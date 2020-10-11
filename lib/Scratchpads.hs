@@ -9,6 +9,7 @@ import           XMonad.ManageHook
 pads :: [NamedScratchpad]
 pads = [ NS "htop" "alacritty -t htop -e /bin/htop" (title =? "htop") htopHook
        , NS "discord" "discord" (className =? "discord") discordHook
+       , NS "wiki" "alacritty -t wiki -e vim ~/wiki/index.md" (title =? "wiki") wikiHook
        , NS "pfetch" "alacritty --hold -t pfetch -e /bin/pfetch" (title =? "pfetch") pfetchHook
        , NS "cava" "alacritty --hold -t cava -e /bin/cava" (title =? "cava") cavaHook
        , NS "watch" "alacritty --working-directory site/ --hold -t watch -e stack exec site watch" (title =? "watch") watchHook
@@ -20,4 +21,5 @@ pads = [ NS "htop" "alacritty -t htop -e /bin/htop" (title =? "htop") htopHook
                cavaHook    = ( customFloating $ rr (4/6) (1/37) (1/3) (1/3))
                watchHook   = ( customFloating $ rr ( 0 ) (1/37) (1/3) (2/3))
                termHook    = ( customFloating $ rr (1/3) (1/37) (2/3) (2/3))
+               wikiHook    = ( customFloating $ rr (1/3) (1/37) (2/3) (2/3))
                rr = W.RationalRect

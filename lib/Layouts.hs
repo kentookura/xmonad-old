@@ -29,8 +29,8 @@ myLayout = tiled ||| mirrorTiled ||| full
     tiled = named "[]="
       $ avoidStruts
       $ windowNavigation
-      $ addTopBar
       $ myGaps
+      $ addTopBar
       $ addTabs shrinkText tabTheme
       $ mySpacing
       $ subLayout [] Simplest

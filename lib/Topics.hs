@@ -1,12 +1,21 @@
 module Topics
   ( myTopics
-  , myTopicConfig)
+  , myTopicConfig
+  , spawnShell
+  , spawnShellIn 
+  , spawnCmdIn 
+  , goto
+  , promptedGoto 
+  , promptedShift
+  )
+
 where
-import XMonad
-import Themes
+import           XMonad
+import           Themes
 import qualified Data.Map as M
 import           XMonad.Actions.TopicSpace
 import           XMonad.StackSet as W
+import           XMonad.Prompt.Workspace
 
 myTopics :: [Topic]
 myTopics = [ "none"
@@ -52,3 +61,20 @@ myTopicConfig = def
     , ("xm",     spawn "alacritty -e vim .xmonad/xmonad.hs")
     ]
   }
+spawnShell :: X ()
+spawnShell = currentTopicDir myTopicConfig >>= spawnShellIn
+
+spawnShellIn :: Dir -> X ()
+spawnShellIn dir = spawn $ "alacritty --working-directory " ++ dir
+
+spawnCmdIn :: Dir -> String -> X ()
+spawnCmdIn dir cmd = spawn $ "alacritty --working-directory " ++ dir ++ " -e " ++ cmd
+
+goto :: Topic -> X ()
+goto = switchTopic myTopicConfig
+
+promptedGoto :: X ()
+promptedGoto = workspacePrompt myXPConfig goto
+
+promptedShift :: X ()
+promptedShift = workspacePrompt myXPConfig $ windows . W.shift
