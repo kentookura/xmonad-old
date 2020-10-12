@@ -57,7 +57,8 @@ myTopicConfig = def
               >> spawn "alacritty --working-directory site/src/templates"
               >> spawn "qutebrowser http://localhost:8000")
     , ("uni",    spawn "alacritty --working-directory uni -e abduco -A uni-session dvtm"
-              >> spawn "alacritty --working-directory uni -e ranger")
+              >> spawn "zathura ~/uni/log/script.pdf"
+              >> spawn "zathura ~/uni/alg/Algebra_2_13.pdf")
     , ("wiki",   spawn "alacritty -e vim wiki/index.md")
     , ("xm",     spawn "alacritty -e vim .xmonad/xmonad.hs")
     ]
