@@ -26,14 +26,14 @@ myLogHook = do
   b <- getNamedPipe "xmobarBot"
   dynamicLogWithPP $ botBarPP
                    { ppOutput  = safePrintToPipe t
-                   , ppTitle   = xmobarColor white "" . shorten 50
-                   , ppVisible = xmobarColor white "" . wrap "" ""
+                   , ppTitle   = xmobarColor white "" . shorten 150
+                   , ppCurrent = xmobarColor blue "" . wrap "(" ")"
+                   , ppVisible = xmobarColor white "" . wrap "" " *"
                    , ppSep     = xmobarColor purple  "" " | "
                    , ppSort    = (. namedScratchpadFilterOutWorkspace) <$> ppSort def
                    }
   dynamicLogWithPP $ topBarPP
                    { ppOutput  = safePrintToPipe b
-                   , ppTitle   = xmobarColor white "" . shorten 50
                    , ppVisible = xmobarColor white "" . wrap "" ""
                    , ppSep     = xmobarColor purple  "" " | "
                    , ppSort    = (. namedScratchpadFilterOutWorkspace) <$> ppSort def
@@ -41,19 +41,12 @@ myLogHook = do
 
 topBarPP :: PP
 topBarPP = def
-         { ppTitle   = xmobarColor white "" . shorten 50
-         , ppCurrent = xmobarColor blue "" . wrap "[" "]"
-         , ppSep     = xmobarColor purple  "" " | "
-         , ppSort    = (. namedScratchpadFilterOutWorkspace) <$> ppSort def
-         }
 
 botBarPP :: PP
 botBarPP = def
-         { ppTitle   = xmobarColor white "" . shorten 50
-         , ppCurrent = xmobarColor blue "" . wrap "[" "]"
-         , ppSep     = xmobarColor purple  "" " | "
-         , ppSort    = (. namedScratchpadFilterOutWorkspace) <$> ppSort def
-         }
+
+
+todoLogger = undefined
 
 safePrintToPipe :: Maybe Handle -> String -> IO ()
 safePrintToPipe = maybe (\_ -> return ()) hPutStrLn

@@ -42,9 +42,9 @@ barTheme =
 tabTheme =
     def
       { fontName            = font
-      , inactiveBorderColor = dark
-      , inactiveColor       = dark
-      , inactiveTextColor   = black
+      , inactiveBorderColor = black
+      , inactiveColor       = black
+      , inactiveTextColor   = dark
       , activeBorderColor   = purple
       , activeColor         = purple
       , activeTextColor     = black

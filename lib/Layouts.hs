@@ -41,7 +41,7 @@ myLayout = tiled ||| mirrorTiled ||| full
       $ myGaps
       $ mySpacing
       $ Mirror $ ResizableTall 1 (2/100) (1/2) []
-    full = named "[ ]"
+    full = named "[*]"
       $ avoidStruts
       $ noBorders Full
     addTopBar = noFrillsDeco shrinkText barTheme

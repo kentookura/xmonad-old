@@ -23,6 +23,7 @@ import qualified Data.Set as S
 import           XMonad
 
 import           XMonad.Actions.TopicSpace
+import           XMonad.Layout.NoBorders
 import           XMonad.Hooks.ManageDocks
 import           XMonad.Hooks.ManageHelpers
 import           XMonad.Hooks.EwmhDesktops
