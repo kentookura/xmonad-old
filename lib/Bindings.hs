@@ -7,6 +7,7 @@ where
 import Themes
 import Topics
 import Scratchpads
+import Tree
 
 import qualified Data.Map as M
 import System.IO
@@ -17,6 +18,7 @@ import qualified XMonad.Actions.FlexibleResize as Flex
 import           XMonad.Actions.FloatKeys
 import           XMonad.Actions.PhysicalScreens
 import           XMonad.Actions.TopicSpace
+import qualified XMonad.Actions.TreeSelect as TS
 import           XMonad.Hooks.ManageDocks
 import           XMonad.Prompt.Workspace
 import           XMonad.Layout.LayoutCombinators
@@ -53,7 +55,7 @@ myKeys conf@(XConfig {XMonad.modMask = modMask}) = M.fromList $
   -- layout
   , ((modMask              , xK_Tab),    sendMessage NextLayout)
   , ((modMask              , xK_f),      sendMessage $ JumpToLayout "[ ]")
-  , ((modMask              , xK_t),      setLayout $ XMonad.layoutHook conf)
+  , ((modMask              , xK_t),      treeselectAction treeTheme)
   , ((modMask              , xK_b),      sendMessage ToggleStruts)
   , ((modMask .|. shiftMask, xK_h),      sendMessage (IncMasterN( 1)))
   , ((modMask .|. shiftMask, xK_l),      sendMessage (IncMasterN(-1)))

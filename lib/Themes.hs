@@ -2,6 +2,7 @@ module Themes
   ( barTheme
   , tabTheme
   , myXPConfig
+  , myFont
   , black
   , purple
   , dark
