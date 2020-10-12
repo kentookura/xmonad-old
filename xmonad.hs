@@ -45,7 +45,12 @@ main = do
   xmonad 
     $ ewmh
     $ docks defaultConfig
-        { layoutHook         = myLayout
+        { startupHook        = myStartupHook
+        , layoutHook         = myLayout
+        , modMask            = mod4Mask
+        , keys               = myKeys
+        , mouseBindings      = myMouseBindings
+        , manageHook         = myManageHook
         , focusFollowsMouse  = False
         , clickJustFocuses   = False
         , XMonad.workspaces  = myTopics
@@ -53,11 +58,6 @@ main = do
         , borderWidth        = 0
         , normalBorderColor  = black
         , focusedBorderColor = purple
-        , modMask            = mod4Mask
-        , keys               = myKeys
-        , startupHook        = myStartupHook
-        , mouseBindings      = myMouseBindings
-        , manageHook         = myManageHook
         }
 
 --------------------------------------------------------------------------------
@@ -66,16 +66,16 @@ myStartupHook :: X ()
 myStartupHook = do
   spawnNamedPipe "xmobar ~/.xmonad/xmobar/xmobar_top" "xmobarTop"
   spawnNamedPipe "xmobar ~/.xmonad/xmobar/xmobar_bot" "xmobarBot"
+  spawnNamedPipe "xmobar -x 1 ~/.xmonad/xmobar/xmobar_top" "xmobarTopLeft"
+  spawnNamedPipe "xmobar -x 2 ~/.xmonad/xmobar/xmobar_top" "xmobarTopRight"
  
-myManageHook :: ManageHook
+myNSManageHook, myManageHook :: ManageHook
+myNSManageHook = namedScratchpadManageHook pads
 myManageHook = composeAll
   [ myNSManageHook
   , dialogHook
   , thunbirHook
   ]
-
-myNSManageHook :: ManageHook
-myNSManageHook = namedScratchpadManageHook pads
 
 dialogHook = composeOne
   [ isDialog -?> doFloat ]

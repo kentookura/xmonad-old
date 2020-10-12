@@ -10,6 +10,7 @@ import           Data.IORef
 import qualified Data.Set as S
 import           Control.Monad (filterM, liftM, join)
 import           XMonad hiding ( logHook )
+import qualified XMonad.StackSet as W
 import           XMonad.Hooks.DynamicLog
 import           XMonad.Util.NamedScratchpad
 import           XMonad.Util.SpawnNamedPipe
@@ -22,29 +23,35 @@ xmobarFont f  = wrap (concat ["<fn-", show f, ">"]) "</fn>"
 
 myLogHook :: X ()
 myLogHook = do
+  l <- getNamedPipe "xmobarTopLeft"
   t <- getNamedPipe "xmobarTop"
+  r <- getNamedPipe "xmobarTopRight"
   b <- getNamedPipe "xmobarBot"
+  dynamicLogWithPP $ topBarPP { ppOutput  = safePrintToPipe l}
+  dynamicLogWithPP $ topBarPP { ppOutput  = safePrintToPipe t}
+  dynamicLogWithPP $ topBarPP { ppOutput  = safePrintToPipe r}
   dynamicLogWithPP $ botBarPP
-                   { ppOutput  = safePrintToPipe t
-                   , ppTitle   = xmobarColor white "" . shorten 150
-                   , ppCurrent = xmobarColor blue "" . wrap "(" ")"
-                   , ppVisible = xmobarColor white "" . wrap "" " *"
-                   , ppSep     = xmobarColor purple  "" " | "
-                   , ppSort    = (. namedScratchpadFilterOutWorkspace) <$> ppSort def
-                   }
-  dynamicLogWithPP $ topBarPP
                    { ppOutput  = safePrintToPipe b
                    , ppVisible = xmobarColor white "" . wrap "" ""
                    , ppSep     = xmobarColor purple  "" " | "
                    , ppSort    = (. namedScratchpadFilterOutWorkspace) <$> ppSort def
                    }
 
+windowCount :: X (Maybe String)
+windowCount = gets $ Just . show . length . W.integrate' . W.stack . W.workspace . W.current . windowset
+
 topBarPP :: PP
 topBarPP = def
+         { ppTitle   = xmobarColor white "" . shorten 150
+         , ppExtras  = [windowCount]
+         , ppCurrent = xmobarColor blue "" . wrap "(" ")"
+         , ppVisible = xmobarColor white "" . wrap "" " *"
+         , ppSep     = xmobarColor purple  "" " | "
+         , ppSort    = (. namedScratchpadFilterOutWorkspace) <$> ppSort def
+         }
 
 botBarPP :: PP
 botBarPP = def
-
 
 todoLogger = undefined
 
