@@ -1,33 +1,46 @@
 # My Build of XMonad
 ![](1.png)
-![](2.png)
 
 ## Layouts
-Nothing too exciting here. The standard ResizableTall, Mirrored ResizableTall
-and Full layout. The tiled layouts have gaps and leave space for the top bar.
-A nice looking bonus is the top bar that I stole form Ethen Schoonover.
+Layouts available are:
+- ResizableTall in with a tabbed sublayout
+- mirrored ResizableTall
+- fullscreen
+
+![a look what the tabbed sublayout looks like](2.png)
 
 ## Hooks
-Nothing to see here except for the scratchpad hook. The additional line is just
-a test.
+### Startup Hook
+Launch 4 bars for 3 monitors. The botom bar log hook duplicates the top one
+at the moment. Eventually I'll write a custom log hook
 
-## NamedScratchPads
-Super useful and nice for the rice.
-htop, pfetch, cava in a fixed floating position. I can launch the hakyll
-development server on a keypress (useful in conjuction with the site topic
-space)
+### NamedScratchPads
+One of my favorite features. Contains scratchpads for:
+- terminal
+- htop
+- discord
+- mail
+- vimwiki
+- pfetch
+- cava
 
 ## TopicSpaces 
 This module allows you to associeate a workspace with a directory and some
-default actions. For instance:  Going to the "site" workspace launches two
-terminals in the configured directories and opens the webpage that is hosted
-locally with hakyll in my browser.  The "cv" workspace is configured to open my
-CV in zathura and the source file in vim.  This allows me to keep my workspaces
-neatly organized and makes working on complex projects simpler.
+default actions.
+For instance:  Going to the "site" workspace launches two terminals in the
+configured directories and opens the webpage that is hosted locally with hakyll
+in my browser. 
+The "cv" workspace is configured to open my CV in zathura and the source file
+in vim. 
+This allows me to keep my workspaces neatly organized and makes working on complex 
+projects simpler.
+
+## TreeSelect
+A bookmarking system for common commands/tasks that is organized in a tree-like structure.
 
 ## Keybinds
 I set my escape-key to super, so I think this config works best with that.
-Here are the keybindings:
+These change regularly, I might not update this table below as often.
 
 ### basics
 | modifiers    | key    | action                               |

@@ -69,8 +69,10 @@ myStartupHook = do
   spawnNamedPipe "xmobar -x 1 ~/.xmonad/xmobar/xmobar_top" "xmobarTopLeft"
   spawnNamedPipe "xmobar -x 2 ~/.xmonad/xmobar/xmobar_top" "xmobarTopRight"
  
-myNSManageHook, myManageHook :: ManageHook
+myNSManageHook :: manageHook
 myNSManageHook = namedScratchpadManageHook pads
+
+myManageHook :: ManageHook
 myManageHook = composeAll
   [ myNSManageHook
   , dialogHook
