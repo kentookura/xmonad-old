@@ -33,11 +33,11 @@ import           XMonad.Util.NamedScratchpad
 --}}}
 
 myKeys conf@(XConfig {XMonad.modMask = modMask}) = M.fromList $ 
-  [
   -- scratchpads and prompts
-    ((modMask                , xK_space), namedScratchpadAction pads "term")
+  [ ((modMask                , xK_space), namedScratchpadAction pads "term")
   , ((modMask .|. mod1Mask   , xK_t),     namedScratchpadAction pads "htop")
   , ((modMask .|. mod1Mask   , xK_f),     namedScratchpadAction pads "pfetch")
+  , ((modMask .|. mod1Mask   , xK_s),     namedScratchpadAction pads "mail")
   , ((modMask .|. mod1Mask   , xK_d),     namedScratchpadAction pads "discord")
   , ((modMask .|. mod1Mask   , xK_c),     namedScratchpadAction pads "cava")
   , ((modMask .|. mod1Mask   , xK_w),     namedScratchpadAction pads "wiki")
