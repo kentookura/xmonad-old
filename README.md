@@ -1,4 +1,6 @@
 # My Build of XMonad
+![](1.png)
+![](2.png)
 
 ## Layouts
 Nothing too exciting here. The standard ResizableTall, Mirrored ResizableTall
