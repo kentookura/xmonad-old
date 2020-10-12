@@ -1,13 +1,14 @@
 # My Build of XMonad
-![](1.png)
+![](1.png)  
 
+a look what the tabbed sublayout looks like:  
+![](2.png)
 ## Layouts
 Layouts available are:
 - ResizableTall in with a tabbed sublayout
 - mirrored ResizableTall
 - fullscreen
 
-![a look what the tabbed sublayout looks like](2.png)
 
 ## Hooks
 ### Startup Hook
