@@ -23,20 +23,19 @@ treeselectAction a =  TS.treeselectAction a
           [ Node (TS.TSNode "Algebra" "" (spawn "alacritty -e ranger uni/alg")) []
           , Node (TS.TSNode "Logic" "" (spawn "alacritty -e ranger uni/log")) []
           ]
+        , Node  (TS.TSNode "+ Site" "Edit my Webpage" (return ()))
+          [ Node (TS.TSNode "index" "" (spawn "alacritty -e vim ~/site/src/index.html")) []
+          , Node (TS.TSNode "templates" "" (spawn "alacritty -e ranger ~/site/src/templates")) []
+          , Node (TS.TSNode "site.hs" "" (spawn "alacritty --working-directory ~/site -e vim ~/site/site.hs")) []
+          ]
         ]
-
-  , TS.ts_background   = 0xdd282c34
-  , TS.ts_font         = myFont
-  , TS.ts_node         = (0x#d0d0d0, 0x#1c1f24)
-  , TS.ts_nodealt      = (0x#d0d0d0, 0x#282c34)
-  , TS.ts_highlight    = (0x#ffffff, 0x#755999)
 
 treeTheme = TS.TSConfig 
   { TS.ts_hidechildren = True
   , TS.ts_background   = 0xdd282c34
   , TS.ts_font         = myFont
   , TS.ts_node         = (0xffC4C4C4, 0xff1c1f24)
-  , TS.ts_nodealt      = (0xffC4C4C4, 0xff282c34)
+  , TS.ts_nodealt      = (0xffC4C4C4, 0xff1c1f24)
   , TS.ts_highlight    = (0xffffffff, 0xff8f3f71)
   , TS.ts_extra        = 0xffd0d0d0
   , TS.ts_node_width   = 200

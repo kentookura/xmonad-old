@@ -40,6 +40,7 @@ myLayout = tiled ||| mirrorTiled ||| full
       $ addTopBar
       $ myGaps
       $ mySpacing
+      $ subLayout [] Simplest
       $ Mirror $ ResizableTall 1 (2/100) (1/2) []
     full = named "[*]"
       $ avoidStruts
