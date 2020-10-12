@@ -34,7 +34,7 @@ Config { font             = "xft:Dina:size=10:regular:antialias=true"
                                            , "-i"	, "<fc=#98971a>Charged</fc>"
                                  ] 50
             --   (%F = y-m-d date, %a = day of week, %T = h:m:s time)
-            , Run Date           "<fc=#ABABAB>%D %a %H:%m </fc>" "date" 10
+            , Run Date           "<fc=#ABABAB>%D %a %H:%M </fc>" "date" 10
 
             , Run StdinReader
             ]
