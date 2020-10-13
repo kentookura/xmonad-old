@@ -8,6 +8,7 @@ import Themes
 import Topics
 import Scratchpads
 import Tree
+import Search
 
 import qualified Data.Map as M
 import System.IO
@@ -17,6 +18,8 @@ import XMonad
 import qualified XMonad.Actions.FlexibleResize as Flex
 import           XMonad.Actions.FloatKeys
 import           XMonad.Actions.PhysicalScreens
+import qualified XMonad.Actions.Search as S
+import           XMonad.Actions.Submap
 import           XMonad.Actions.TopicSpace
 import qualified XMonad.Actions.TreeSelect as TS
 import           XMonad.Hooks.ManageDocks
@@ -115,6 +118,11 @@ myKeys conf@(XConfig {XMonad.modMask = modMask}) = M.fromList $
   [((m .|. modMask, key), f sc)
     | (key, sc) <- zip [xK_m, xK_comma, xK_period] [0..]
     , (f, m)    <- [(viewScreen def, 0), (sendToScreen def, shiftMask)]]
+  ++
+  -- search
+  [((modMask, xK_s), submap $ searchList $ S.promptSearch myXPConfig)]
+  -- ++
+  -- [((modMask, k), S.selectSearch f) | (k,f) <- searchList ]
 
 
 myMouseBindings (XConfig {XMonad.modMask = modMask}) = M.fromList

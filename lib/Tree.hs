@@ -24,9 +24,9 @@ treeselectAction a =  TS.treeselectAction a
           , Node (TS.TSNode "Logic" "" (spawn "alacritty -e ranger uni/log")) []
           ]
         , Node  (TS.TSNode "+ Site" "Edit my Webpage" (return ()))
-          [ Node (TS.TSNode "index" "" (spawn "alacritty -e vim ~/site/src/index.html")) []
-          , Node (TS.TSNode "templates" "" (spawn "alacritty -e ranger ~/site/src/templates")) []
-          , Node (TS.TSNode "site.hs" "" (spawn "alacritty --working-directory ~/site -e vim ~/site/site.hs")) []
+          [ Node (TS.TSNode "index" "" (spawn "alacritty --working-directory /site -e vim ~/site/src/index.html")) []
+          , Node (TS.TSNode "site.hs" "" (spawn "alacritty --working-directory ~/site/ -e vim ~/site/site.hs")) []
+          , Node (TS.TSNode "templates" "" (spawn "alacritty --hold -e ranger ~/site/src/templates" )) []
           ]
         ]
 
