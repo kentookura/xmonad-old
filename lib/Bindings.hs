@@ -15,6 +15,7 @@ import System.IO
 import System.Exit
 import XMonad
 
+import           XMonad.Actions.DwmPromote
 import qualified XMonad.Actions.FlexibleResize as Flex
 import           XMonad.Actions.FloatKeys
 import           XMonad.Actions.PhysicalScreens
@@ -24,13 +25,13 @@ import           XMonad.Actions.TopicSpace
 import qualified XMonad.Actions.TreeSelect as TS
 import           XMonad.Hooks.ManageDocks
 import           XMonad.Prompt.Workspace
+import           XMonad.Layout.BoringWindows
 import           XMonad.Layout.LayoutCombinators
 import           XMonad.Layout.ResizableTile
 import           XMonad.Layout.SubLayouts
 import           XMonad.Layout.Tabbed
-import           XMonad.Layout.WindowNavigation
+import           XMonad.Actions.WindowNavigation
 import           XMonad.Operations
-import           XMonad.Prompt.Workspace
 import           XMonad.StackSet
 import           XMonad.StackSet as W
 import           XMonad.Util.EZConfig(additionalKeys)
@@ -61,10 +62,8 @@ myKeys conf@(XConfig {XMonad.modMask = modMask}) = M.fromList $
   , ((modMask              , xK_f),      sendMessage $ JumpToLayout "[ ]")
   , ((modMask              , xK_t),      treeselectAction treeTheme)
   , ((modMask              , xK_b),      sendMessage ToggleStruts)
-  , ((modMask .|. shiftMask, xK_h),      sendMessage (IncMasterN( 1)))
-  , ((modMask .|. shiftMask, xK_l),      sendMessage (IncMasterN(-1)))
-
-  -- focus
+  , ((modMask .|. shiftMask, xK_h),      dwmpromote)
+  , ((modMask .|. shiftMask, xK_l),      dwmpromote)
   , ((modMask .|. shiftMask, xK_space),  windows W.swapMaster)
   , ((modMask              , xK_j),      windows W.focusDown)
   , ((modMask              , xK_k),      windows W.focusUp)
@@ -72,10 +71,10 @@ myKeys conf@(XConfig {XMonad.modMask = modMask}) = M.fromList $
   , ((modMask .|. shiftMask, xK_k),      windows W.swapUp)
 
 
-  , ((modMask .|. mod1Mask, xK_h), sendMessage $ pullGroup L)
-  , ((modMask .|. mod1Mask, xK_l), sendMessage $ pullGroup R)
-  , ((modMask .|. mod1Mask, xK_k), sendMessage $ pullGroup U)
-  , ((modMask .|. mod1Mask, xK_j), sendMessage $ pullGroup D)
+  , ((modMask .|. mod1Mask, xK_h), (sendMessage . pullGroup) L)
+  , ((modMask .|. mod1Mask, xK_l), (sendMessage . pullGroup) R)
+  , ((modMask .|. mod1Mask, xK_k), (sendMessage . pullGroup) U)
+  , ((modMask .|. mod1Mask, xK_j), (sendMessage . pullGroup) D)
 
   , ((modMask .|. mod1Mask, xK_m), withFocused (sendMessage . MergeAll))
   , ((modMask .|. mod1Mask, xK_u), withFocused (sendMessage . UnMerge))

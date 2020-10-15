@@ -30,28 +30,31 @@ myLogHook = do
   dynamicLogWithPP $ topBarPP { ppOutput  = safePrintToPipe l}
   dynamicLogWithPP $ topBarPP { ppOutput  = safePrintToPipe t}
   dynamicLogWithPP $ topBarPP { ppOutput  = safePrintToPipe r}
-  dynamicLogWithPP $ botBarPP
-                   { ppOutput  = safePrintToPipe b
-                   , ppVisible = xmobarColor white "" . wrap "" ""
-                   , ppSep     = xmobarColor purple  "" " | "
-                   , ppSort    = (. namedScratchpadFilterOutWorkspace) <$> ppSort def
-                   }
+  dynamicLogWithPP $ botBarPP { ppOutput  = safePrintToPipe b }
 
 windowCount :: X (Maybe String)
-windowCount = gets $ Just . show . length . W.integrate' . W.stack . W.workspace . W.current . windowset
+windowCount = gets $ Just . wrap "{ " " }" . show . length . W.integrate' . W.stack . W.workspace . W.current . windowset
 
 topBarPP :: PP
 topBarPP = def
          { ppTitle   = xmobarColor white "" . shorten 150
-         , ppExtras  = [windowCount]
          , ppCurrent = xmobarColor blue "" . wrap "(" ")"
          , ppVisible = xmobarColor white "" . wrap "" " *"
          , ppSep     = xmobarColor purple  "" " | "
+         , ppExtras  = [windowCount] 
          , ppSort    = (. namedScratchpadFilterOutWorkspace) <$> ppSort def
          }
 
 botBarPP :: PP
 botBarPP = def
+  { ppCurrent = const ""
+  , ppVisible = const ""
+  , ppUrgent  = const ""
+  , ppLayout  = const ""
+  , ppTitle   = const ""
+  , ppSep     = ""
+  , ppSort = (. namedScratchpadFilterOutWorkspace) <$> ppSort def
+  }
 
 todoLogger = undefined
 
