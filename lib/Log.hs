@@ -39,11 +39,19 @@ topBarPP :: PP
 topBarPP = def
          { ppTitle   = xmobarColor white "" . shorten 150
          , ppCurrent = xmobarColor blue "" . wrap "(" ")"
+         , ppLayout  = layoutMap
          , ppVisible = xmobarColor white "" . wrap "" " *"
          , ppSep     = xmobarColor purple  "" " | "
          , ppExtras  = [windowCount] 
          , ppSort    = (. namedScratchpadFilterOutWorkspace) <$> ppSort def
          }
+layoutMap :: String -> String
+layoutMap l = case l of
+                "[]=" -> "<icon=tile.xbm/>"
+                "TTT" -> "<icon=bstack.xbm/>"
+                "[*]" -> "<icon=monocle.xbm/>"
+                _     -> "unknown layout"
+
 
 botBarPP :: PP
 botBarPP = def

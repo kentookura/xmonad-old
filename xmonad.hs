@@ -48,9 +48,9 @@ main = do
         { startupHook        = myStartupHook
         , layoutHook         = myLayout
         , modMask            = mod4Mask
+        , manageHook         = myManageHook
         , keys               = myKeys
         , mouseBindings      = myMouseBindings
-        , manageHook         = myManageHook
         , focusFollowsMouse  = False
         , clickJustFocuses   = False
         , XMonad.workspaces  = myTopics
@@ -73,14 +73,8 @@ myNSManageHook :: ManageHook
 myNSManageHook = namedScratchpadManageHook pads
 
 myManageHook :: ManageHook
-myManageHook = composeAll
-  [ myNSManageHook
-  , dialogHook
-  , thunbirHook
+myManageHook = composeAll . concat $
+  [ [ myNSManageHook ]
+  , [ title =? "x9term" --> doFloat ]
+  , [ className =? "Msgcompose" --> doFloat ]
   ]
-
-dialogHook = composeOne
-  [ isDialog -?> doFloat ]
-
-thunbirHook = composeAll
-  [ className =? "Msgcompose" --> doFloat ]
