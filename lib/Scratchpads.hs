@@ -8,8 +8,7 @@ import           XMonad.ManageHook
 
 pads :: [NamedScratchpad]
 pads = [ NS "htop"    "alacritty -t htop -e /bin/htop" (title =? "htop") htopHook
-
-       , NS "spotify" "spotify"                        (appName =? "spotify") spotHook
+       , NS "spotify" "alacritty -t spot -e spt"       (title =? "spot") spotHook
        , NS "discord" "discord"                        (className =? "discord") discordHook
        , NS "mail"    "thunderbird"                    (className =? "Thunderbird") discordHook
        , NS "wiki"    "alacritty -t wiki -e vim ~/wiki/index.md" (title =? "wiki") wikiHook
