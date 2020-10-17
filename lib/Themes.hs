@@ -1,7 +1,8 @@
 module Themes 
   ( barTheme
   , tabTheme
-  , myXPConfig
+  , promptTheme
+  , hotPromptTheme
   , myFont
   , black
   , purple
@@ -18,6 +19,7 @@ import           XMonad.Layout.NoFrillsDecoration
 
 myFont = "xft:Dina:bold:size=10:antialias=true" 
 black  = "#282828"
+red    = "#cc241d"
 purple = "#8f3f71"
 dark   = "#665c54" 
 white  = "#C4C4C4"
@@ -55,15 +57,28 @@ tabTheme =
     where
       font = myFont
 
-myXPConfig :: XPConfig
-myXPConfig = greenXPConfig 
-  { font              = myFont
-  , bgColor           = black
-  , fgColor           = purple
-  , bgHLight          = dark
-  , fgHLight          = "#1d2021"
-  , borderColor       = "#3c3836"
-  , promptBorderWidth = 2
-  , position          = Bottom
-  , height            = 25
-  }
+promptTheme =
+  def
+    { font              = myFont
+    , bgColor           = black
+    , fgColor           = purple
+    , bgHLight          = dark
+    , fgHLight          = "#1d2021"
+    , borderColor       = "#3c3836"
+    , promptBorderWidth = 2
+    , position          = Bottom
+    , height            = 25
+    }
+
+hotPromptTheme =
+  def
+    { font              = myFont
+    , bgColor           = black
+    , fgColor           = red
+    , bgHLight          = dark
+    , fgHLight          = "#1d2021"
+    , borderColor       = "#3c3836"
+    , promptBorderWidth = 2
+    , position          = Top
+    , height            = 25
+    }

@@ -31,6 +31,7 @@ import           XMonad.Layout.ResizableTile
 import           XMonad.Layout.SubLayouts
 import           XMonad.Layout.Tabbed
 import           XMonad.Actions.WindowNavigation
+import           XMonad.Prompt.ConfirmPrompt
 import           XMonad.Operations
 import           XMonad.StackSet
 import           XMonad.StackSet as W
@@ -104,7 +105,7 @@ myKeys conf@(XConfig {XMonad.modMask = modMask}) = M.fromList $
   -- util
   , ((modMask .|. shiftMask, xK_c),      kill)  
   , ((modMask              , xK_q),      restart "xmonad" True)
-  , ((modMask .|. shiftMask, xK_q),      io (exitWith ExitSuccess))
+  , ((modMask .|. shiftMask, xK_q),      confirmPrompt hotPromptTheme "quit XMonad" $ io (exitWith ExitSuccess))
 
   -- topics
   , ((modMask              , xK_a),      currentTopicAction myTopicConfig)
@@ -120,7 +121,7 @@ myKeys conf@(XConfig {XMonad.modMask = modMask}) = M.fromList $
     , (f, m)    <- [(viewScreen def, 0), (sendToScreen def, shiftMask)]]
   ++
   -- search
-  [((modMask, xK_s), submap $ searchList $ S.promptSearch myXPConfig)]
+  [((modMask, xK_s), submap $ searchList $ S.promptSearch promptTheme)]
   -- ++
   -- [((modMask, k), S.selectSearch f) | (k,f) <- searchList ]
 
