@@ -33,18 +33,19 @@ myLogHook = do
   dynamicLogWithPP $ botBarPP { ppOutput  = safePrintToPipe b }
 
 windowCount :: X (Maybe String)
-windowCount = gets $ Just . wrap "{ " " }" . show . length . W.integrate' . W.stack . W.workspace . W.current . windowset
+windowCount = gets $ Just . wrap "[ " " ]" . show . length . W.integrate' . W.stack . W.workspace . W.current . windowset
 
 topBarPP :: PP
 topBarPP = def
          { ppTitle   = xmobarColor white "" . shorten 150
-         , ppCurrent = xmobarColor blue "" . wrap "(" ")"
+         , ppCurrent = xmobarColor blue "" . wrap "[" "]"
          , ppLayout  = layoutMap
          , ppVisible = xmobarColor white "" . wrap "" " *"
          , ppSep     = xmobarColor purple  "" " | "
          , ppExtras  = [windowCount] 
          , ppSort    = (. namedScratchpadFilterOutWorkspace) <$> ppSort def
          }
+
 layoutMap :: String -> String
 layoutMap l = case l of
                 "[]=" -> "<icon=tile.xbm/>"
