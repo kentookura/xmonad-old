@@ -1,11 +1,10 @@
-{-
+                                                                      {-
                                                                   _/   
    _/    _/  _/_/_/  _/_/      _/_/    _/_/_/      _/_/_/    _/_/_/    
     _/_/    _/    _/    _/  _/    _/  _/    _/  _/    _/  _/    _/     
  _/    _/  _/    _/    _/  _/    _/  _/    _/  _/    _/  _/    _/      
 _/    _/  _/    _/    _/    _/_/    _/    _/    _/_/_/    _/_/_/       
-
--}                                                                      
+                                                                      -}
 
 import Bindings
 import Topics
@@ -77,4 +76,5 @@ myManageHook = composeAll . concat $
   [ [ myNSManageHook ]
   , [ title =? "x9term" --> doFloat ]
   , [ className =? "Msgcompose" --> doFloat ]
+  --, [ isFloating --> hasBorder True ]
   ]

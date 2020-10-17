@@ -19,7 +19,7 @@ import           XMonad.StackSet as W
 import           XMonad.Prompt.Workspace
 
 myTopics :: [Topic]
-myTopics = [ "none"
+myTopics = [ "~"
            , "config"
            , "cv"
            , "docs"
@@ -34,7 +34,8 @@ myTopicConfig :: TopicConfig
 myTopicConfig = def
   -- associate directory with topic
   { topicDirs = M.fromList
-    [ ("none", "./")
+    [ ("~", "/home/kento")
+    , ("xm", ".xmonad")
     , ("config", ".config")
     , ("cv", "doc/cv")
     , ("docs", "doc")
@@ -43,7 +44,6 @@ myTopicConfig = def
     , ("uni", "uni")
     , ("web", "dl")
     , ("wiki", "wiki")
-    , ("xm", ".xmonad")
     ]
   , topicActions = M.fromList
     [
@@ -77,7 +77,7 @@ goto :: Topic -> X ()
 goto = switchTopic myTopicConfig
 
 promptedGoto :: X ()
-promptedGoto = workspacePrompt myXPConfig goto
+promptedGoto = workspacePrompt promptTheme goto
 
 promptedShift :: X ()
-promptedShift = workspacePrompt myXPConfig $ windows . W.shift
+promptedShift = workspacePrompt promptTheme $ windows . W.shift
