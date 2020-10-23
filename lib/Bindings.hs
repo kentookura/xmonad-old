@@ -40,18 +40,8 @@ import           XMonad.Util.NamedScratchpad
 --}}}
 
 myKeys conf@(XConfig {XMonad.modMask = modMask}) = M.fromList $ 
-  -- scratchpads and prompts
-  [ ((modMask                , xK_space), namedScratchpadAction pads "term")
-  , ((modMask .|. mod1Mask   , xK_t),     namedScratchpadAction pads "htop")
-  , ((modMask .|. mod1Mask   , xK_f),     namedScratchpadAction pads "pfetch")
-  , ((modMask .|. mod1Mask   , xK_s),     namedScratchpadAction pads "spotify")
-  , ((modMask .|. mod1Mask   , xK_a),     namedScratchpadAction pads "mail")
-  , ((modMask .|. mod1Mask   , xK_d),     namedScratchpadAction pads "discord")
-  , ((modMask .|. mod1Mask   , xK_c),     namedScratchpadAction pads "cava")
-  , ((modMask .|. mod1Mask   , xK_w),     namedScratchpadAction pads "wiki")
-
   -- programs
-  , ((modMask                 , xK_Return), spawnShell )
+  [ ((modMask                 , xK_Return), spawnShell )
   , ((modMask .|. shiftMask   , xK_Return), spawn "alacritty")
   , ((modMask                 , xK_d),      spawn "rofi -matching fuzzy -modi combi -show combi -combi-modi run, drun -theme gruvbox-dark-hard")
   , ((modMask                 , xK_w),      spawn "qutebrowser")
@@ -124,6 +114,9 @@ myKeys conf@(XConfig {XMonad.modMask = modMask}) = M.fromList $
   [((modMask, xK_s), submap $ searchList $ S.promptSearch promptTheme)]
   -- ++
   -- [((modMask, k), S.selectSearch f) | (k,f) <- searchList ]
+  ++
+  padKeys 
+
 
 
 myMouseBindings (XConfig {XMonad.modMask = modMask}) = M.fromList
