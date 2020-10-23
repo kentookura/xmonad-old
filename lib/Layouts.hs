@@ -30,17 +30,17 @@ myLayout = tiled ||| mirrorTiled ||| full
     tiled = named "[]="
       $ avoidStruts
       $ windowNavigation
-      $ myGaps
+--    $ myGaps
       $ addTopBar
-      $ addTabs shrinkText tabTheme
-      $ mySpacing
+--    $ mySpacing
       $ subLayout [] Simplest
       $ ResizableTall 1 (1/50) (2/3) []
     mirrorTiled = named "TTT"
       $ avoidStruts
+--    $ myGaps
       $ addTopBar
-      $ myGaps
-      $ mySpacing
+      $ addTabs shrinkText tabTheme
+--    $ mySpacing
       $ subLayout [] Simplest
       $ Mirror $ ResizableTall 1 (2/100) (1/2) []
     full = named "[*]"
