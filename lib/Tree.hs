@@ -15,17 +15,22 @@ import qualified XMonad.StackSet as W
 treeselectAction :: TS.TSConfig (X ()) -> X ()
 treeselectAction a =  TS.treeselectAction a
         [ Node  (TS.TSNode "+ System" "System Controls" (return ()))
-           [ Node (TS.TSNode "Shutdown" "" (spawn "sudo shutdown now")) []
-           , Node (TS.TSNode "Reboot" "" (spawn "sudo reboot now")) []
-           , Node (TS.TSNode "exit X" "" (spawn "pkill xinit")) []
-           ]
+             [ Node (TS.TSNode "Shutdown" "" (spawn "sudo shutdown now")) []
+             , Node (TS.TSNode "Reboot"   "" (spawn "sudo reboot now")) []
+             , Node (TS.TSNode "exit X"   "" (spawn "pkill xinit")) []
+             ]
+
         , Node  (TS.TSNode "+ Uni" "Current Lectures" (return ()))
-          [ Node (TS.TSNode "Algebra" "" (spawn "alacritty -e ranger uni/alg")) []
-          , Node (TS.TSNode "Logic" "" (spawn "alacritty -e ranger uni/log")) []
-          ]
+             [ Node (TS.TSNode "Algebra" "" (spawn "alacritty -e ranger uni/alg")) []
+             , Node (TS.TSNode "+ Logic" "" (return()))
+                 [ Node (TS.TSNode "Script" "" (spawn "zathura ~/uni/log/script.pdf")) []
+                 , Node (TS.TSNode "ranger" "" (spawn "alacritty -e ranger uni/log")) []
+                 ]
+             ]
+
         , Node  (TS.TSNode "+ Site" "Edit my Webpage" (return ()))
-          [ Node (TS.TSNode "index" "" (spawn "alacritty --working-directory /site -e vim ~/site/src/index.html")) []
-          , Node (TS.TSNode "site.hs" "" (spawn "alacritty --working-directory ~/site/ -e vim ~/site/site.hs")) []
+          [ Node (TS.TSNode "index"     "" (spawn "alacritty --working-directory /site -e vim ~/site/src/index.html")) []
+          , Node (TS.TSNode "site.hs"   "" (spawn "alacritty --working-directory ~/site/ -e vim ~/site/site.hs")) []
           , Node (TS.TSNode "templates" "" (spawn "alacritty --hold -e ranger ~/site/src/templates" )) []
           ]
         ]
