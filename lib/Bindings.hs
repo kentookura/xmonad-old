@@ -33,14 +33,15 @@ import           XMonad.Layout.Tabbed
 import           XMonad.Actions.WindowNavigation
 import           XMonad.Prompt.ConfirmPrompt
 import           XMonad.Operations
-import           XMonad.StackSet
 import           XMonad.StackSet as W
 import           XMonad.Util.EZConfig(additionalKeys)
 import           XMonad.Util.NamedScratchpad
 --}}}
 
-myKeys conf@(XConfig {XMonad.modMask = modMask}) = M.fromList $ 
+myKeys conf@XConfig {XMonad.modMask = modMask} = M.fromList $ 
   -- programs
+  padKeys 
+  ++
   [ ((modMask                 , xK_Return), spawnShell )
   , ((modMask .|. shiftMask   , xK_Return), spawn "alacritty")
   , ((modMask                 , xK_d),      spawn "rofi -matching fuzzy -modi combi -show combi -combi-modi run, drun -theme gruvbox-dark-hard")
@@ -95,7 +96,7 @@ myKeys conf@(XConfig {XMonad.modMask = modMask}) = M.fromList $
   -- util
   , ((modMask .|. shiftMask, xK_c),      kill)  
   , ((modMask              , xK_q),      restart "xmonad" True)
-  , ((modMask .|. shiftMask, xK_q),      confirmPrompt hotPromptTheme "quit XMonad" $ io (exitWith ExitSuccess))
+  , ((modMask .|. shiftMask, xK_q),      confirmPrompt hotPromptTheme "quit XMonad" $ io exitSuccess)
 
   -- topics
   , ((modMask              , xK_a),      currentTopicAction myTopicConfig)
@@ -104,6 +105,10 @@ myKeys conf@(XConfig {XMonad.modMask = modMask}) = M.fromList $
 
   , ((shiftMask, xK_F2), spawn "pamixer -d 5")
   , ((shiftMask, xK_F2), spawn "pamixer -i 5")]
+  ++
+  [((m .|. modMask, key), windows $ f workspace)
+    | (workspace, key) <- zip (XMonad.workspaces conf) [xK_1 .. xK_9]
+    , (f, m) <- [(W.view, 0), (W.shift, shiftMask)]]
   ++
   -- screens
   [((m .|. modMask, key), f sc)
@@ -114,13 +119,12 @@ myKeys conf@(XConfig {XMonad.modMask = modMask}) = M.fromList $
   [((modMask, xK_s), submap $ searchList $ S.promptSearch promptTheme)]
   -- ++
   -- [((modMask, k), S.selectSearch f) | (k,f) <- searchList ]
-  ++
-  padKeys 
 
 
 
-myMouseBindings (XConfig {XMonad.modMask = modMask}) = M.fromList
+myMouseBindings XConfig {XMonad.modMask = modMask} = M.fromList
   [ ((modMask,               button1), \w -> XMonad.Operations.focus w >> mouseMoveWindow w )
   , ((modMask .|. shiftMask, button1), \w -> XMonad.Operations.focus w >> Flex.mouseResizeWindow w )
+  , ((modMask,               button4), \w -> XMonad.Operations.focus w >> windows W.focusDown)
+  , ((modMask,               button5), \w -> XMonad.Operations.focus w >> windows W.focusUp)
   ]
-
