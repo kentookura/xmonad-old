@@ -14,18 +14,22 @@ import qualified XMonad.StackSet as W
 
 treeselectAction :: TS.TSConfig (X ()) -> X ()
 treeselectAction a =  TS.treeselectAction a
-        [ Node  (TS.TSNode "+ System" "System Controls" (return ()))
-             [ Node (TS.TSNode "Shutdown" "" (spawn "sudo shutdown now")) []
-             , Node (TS.TSNode "Reboot"   "" (spawn "sudo reboot now")) []
-             , Node (TS.TSNode "exit X"   "" (spawn "pkill xinit")) []
-             ]
-
-        , Node  (TS.TSNode "+ Uni" "Current Lectures" (return ()))
+        [ Node  (TS.TSNode "+ Uni" "Current Lectures" (return ()))
              [ Node (TS.TSNode "Algebra" "" (spawn "alacritty -e ranger uni/alg")) []
              , Node (TS.TSNode "+ Logic" "" (return()))
                  [ Node (TS.TSNode "Script" "" (spawn "zathura ~/uni/log/script.pdf")) []
                  , Node (TS.TSNode "ranger" "" (spawn "alacritty -e ranger uni/log")) []
                  ]
+             ]
+        , Node  (TS.TSNode "+ System" "System Controls" (return ()))
+             [ Node (TS.TSNode "Shutdown" "" (spawn "sudo shutdown now")) []
+             , Node (TS.TSNode "Reboot"   "" (spawn "sudo reboot now")) []
+             , Node (TS.TSNode "exit X"   "" (spawn "pkill xinit")) []
+             ]
+
+        , Node (TS.TSNode "+ docs" "my documents" (return()))
+             [ Node (TS.TSNode "What I wish I knew when learning Haskell" "" (spawn "zathura ~/doc/haskell.pdf")) []
+             , Node (TS.TSNode "Homotopy Type Theory" "" (spawn "zathura ~/uni/hott.pdf")) []
              ]
 
         , Node  (TS.TSNode "+ Site" "Edit my Webpage" (return ()))

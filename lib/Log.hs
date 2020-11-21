@@ -41,17 +41,11 @@ topBarPP = def
          , ppCurrent = xmobarColor blue "" . wrap "[" "]"
          , ppLayout  = layoutMap
          , ppVisible = xmobarColor white "" . wrap "/" "/"
+         , ppHidden  = id
          , ppSep     = xmobarColor purple  "" " | "
          , ppExtras  = [windowCount] 
          , ppSort    = (. namedScratchpadFilterOutWorkspace) <$> ppSort def
          }
-
-layoutMap :: String -> String
-layoutMap l = case l of
-                "[]=" -> "<icon=tile.xbm/>"
-                "TTT" -> "<icon=bstack.xbm/>"
-                "[*]" -> "<icon=monocle.xbm/>"
-                _     -> "unknown layout"
 
 
 botBarPP :: PP
@@ -64,6 +58,14 @@ botBarPP = def
   , ppSep     = ""
   , ppSort = (. namedScratchpadFilterOutWorkspace) <$> ppSort def
   }
+
+layoutMap :: String -> String
+layoutMap l = case l of
+                "[]=" -> "<icon=tile.xbm/>"
+                "TTT" -> "<icon=bstack.xbm/>"
+                "[*]" -> "<icon=monocle.xbm/>"
+                _     -> "unknown layout"
+
 
 todoLogger = undefined
 

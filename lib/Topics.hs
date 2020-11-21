@@ -20,14 +20,14 @@ import           XMonad.Prompt.Workspace
 
 myTopics :: [Topic]
 myTopics = [ "~"
+           , "xm"
+           , "uni"
            , "config"
            , "cv"
            , "docs"
            , "hsk"
            , "site"
-           , "uni"
            , "wiki"
-           , "xm"
            , "web"]
 
 myTopicConfig :: TopicConfig
@@ -49,6 +49,7 @@ myTopicConfig = def
     [
       ("config", spawn "alacritty"
               >> spawn "alacritty")
+    , ("xm",     spawn "alacritty -e vim .xmonad/xmonad.hs")
     , ("cv",     spawn "zathura doc/cv/output/resume.pdf" 
               >> spawn "alacritty --working-directory doc/cv/markdown/"
               >> spawn "alacritty -e vim doc/cv/markdown/resume.md")
@@ -60,7 +61,6 @@ myTopicConfig = def
               >> spawn "zathura ~/uni/log/script.pdf"
               >> spawn "zathura ~/uni/alg/Algebra_2_13.pdf")
     , ("wiki",   spawn "alacritty -e vim wiki/index.md")
-    , ("xm",     spawn "alacritty -e vim .xmonad/xmonad.hs")
     ]
   }
 

@@ -32,6 +32,7 @@ myLayout = tiled ||| mirrorTiled ||| full
       $ windowNavigation
 --    $ myGaps
       $ addTopBar
+      $ addTabs shrinkText tabTheme
 --    $ mySpacing
       $ subLayout [] Simplest
       $ ResizableTall 1 (1/50) (2/3) []
@@ -39,7 +40,6 @@ myLayout = tiled ||| mirrorTiled ||| full
       $ avoidStruts
 --    $ myGaps
       $ addTopBar
-      $ addTabs shrinkText tabTheme
 --    $ mySpacing
       $ subLayout [] Simplest
       $ Mirror $ ResizableTall 1 (2/100) (1/2) []
