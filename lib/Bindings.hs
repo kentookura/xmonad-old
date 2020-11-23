@@ -56,6 +56,8 @@ myKeys conf@XConfig {XMonad.modMask = modMask} = M.fromList $
   , ((modMask              , xK_b),      sendMessage ToggleStruts)
   , ((modMask .|. shiftMask, xK_h),      dwmpromote)
   , ((modMask .|. shiftMask, xK_l),      dwmpromote)
+  , ((modMask .|. shiftMask .|. mod1Mask, xK_h), sendMessage (IncMasterN 1))
+  , ((modMask .|. shiftMask .|. mod1Mask, xK_l), sendMessage (IncMasterN (-1)))
   , ((modMask .|. shiftMask, xK_space),  windows W.swapMaster)
   , ((modMask              , xK_j),      windows W.focusDown)
   , ((modMask              , xK_k),      windows W.focusUp)
