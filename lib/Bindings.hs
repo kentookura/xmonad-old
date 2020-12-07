@@ -15,24 +15,24 @@ import System.IO
 import System.Exit
 import XMonad
 
-import           XMonad.Actions.DwmPromote
 import qualified XMonad.Actions.FlexibleResize as Flex
+import qualified XMonad.Actions.Search as S
+import qualified XMonad.Actions.TreeSelect as TS
+import           XMonad.Actions.DwmPromote
 import           XMonad.Actions.FloatKeys
 import           XMonad.Actions.PhysicalScreens
-import qualified XMonad.Actions.Search as S
 import           XMonad.Actions.Submap
 import           XMonad.Actions.TopicSpace
-import qualified XMonad.Actions.TreeSelect as TS
+import           XMonad.Actions.WindowNavigation
 import           XMonad.Hooks.ManageDocks
-import           XMonad.Prompt.Workspace
 import           XMonad.Layout.BoringWindows
 import           XMonad.Layout.LayoutCombinators
 import           XMonad.Layout.ResizableTile
 import           XMonad.Layout.SubLayouts
 import           XMonad.Layout.Tabbed
-import           XMonad.Actions.WindowNavigation
-import           XMonad.Prompt.ConfirmPrompt
 import           XMonad.Operations
+import           XMonad.Prompt.ConfirmPrompt
+import           XMonad.Prompt.Workspace
 import           XMonad.StackSet as W
 import           XMonad.Util.EZConfig(additionalKeys)
 import           XMonad.Util.NamedScratchpad
@@ -47,6 +47,7 @@ myKeys conf@XConfig {XMonad.modMask = modMask} = M.fromList $
   , ((modMask                 , xK_d),      spawn "rofi -matching fuzzy -modi combi -show combi -combi-modi run, drun -theme gruvbox-dark-hard")
   , ((modMask                 , xK_w),      spawn "qutebrowser")
   , ((modMask                 , xK_r),      spawn "alacritty -e ranger")
+  , ((controlMask .|. mod1Mask, xK_k),      spawn "kbd")
   , ((controlMask .|. mod1Mask, xK_l),      spawn "lock")
 
   -- layout
@@ -95,15 +96,15 @@ myKeys conf@XConfig {XMonad.modMask = modMask} = M.fromList $
   , ((modMask .|. shiftMask, xK_Right), withFocused (keysResizeWindow (10 ,  0) (0, 0)))
   , ((modMask .|. shiftMask, xK_Left ), withFocused (keysResizeWindow (-10,  0) (0, 0)))
 
-  -- util
-  , ((modMask .|. shiftMask, xK_c),      kill)  
-  , ((modMask              , xK_q),      restart "xmonad" True)
-  , ((modMask .|. shiftMask, xK_q),      confirmPrompt hotPromptTheme "quit XMonad" $ io exitSuccess)
-
   -- topics
   , ((modMask              , xK_a),      currentTopicAction myTopicConfig)
   , ((modMask              , xK_g),      promptedGoto)
   , ((modMask .|. shiftMask, xK_g),      promptedShift)
+
+  -- util
+  , ((modMask .|. shiftMask, xK_c),      kill)  
+  , ((modMask              , xK_q),      restart "xmonad" True)
+  , ((modMask .|. shiftMask, xK_q),      confirmPrompt hotPromptTheme "quit XMonad" $ io exitSuccess)
 
   , ((shiftMask, xK_F2), spawn "pamixer -d 5")
   , ((shiftMask, xK_F2), spawn "pamixer -i 5")]
@@ -116,9 +117,8 @@ myKeys conf@XConfig {XMonad.modMask = modMask} = M.fromList $
   [((m .|. modMask, key), f sc)
     | (key, sc) <- zip [xK_m, xK_comma, xK_period] [0..]
     , (f, m)    <- [(viewScreen def, 0), (sendToScreen def, shiftMask)]]
-  ++
   -- search
-  [((modMask, xK_s), submap $ searchList $ S.promptSearch promptTheme)]
+  --[((modMask, xK_s), submap $ searchList $ S.promptSearch promptTheme)]
   -- ++
   -- [((modMask, k), S.selectSearch f) | (k,f) <- searchList ]
 
@@ -127,6 +127,7 @@ myKeys conf@XConfig {XMonad.modMask = modMask} = M.fromList $
 myMouseBindings XConfig {XMonad.modMask = modMask} = M.fromList
   [ ((modMask,               button1), \w -> XMonad.Operations.focus w >> mouseMoveWindow w )
   , ((modMask .|. shiftMask, button1), \w -> XMonad.Operations.focus w >> Flex.mouseResizeWindow w )
+  --, ((modMask,               button2), \w -> XMonad.Operations.focus w >> windows W.sink)
   , ((modMask,               button4), \w -> XMonad.Operations.focus w >> windows W.focusDown)
   , ((modMask,               button5), \w -> XMonad.Operations.focus w >> windows W.focusUp)
   ]
