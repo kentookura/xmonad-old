@@ -39,6 +39,7 @@ treeselectAction a =  TS.treeselectAction a
           ]
         ]
 
+
 treeTheme = TS.TSConfig 
   { TS.ts_hidechildren = True
   , TS.ts_background   = 0xdd282c34

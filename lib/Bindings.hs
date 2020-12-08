@@ -26,6 +26,8 @@ import           XMonad.Actions.TopicSpace
 import           XMonad.Actions.WindowNavigation
 import           XMonad.Hooks.ManageDocks
 import           XMonad.Layout.BoringWindows
+import           XMonad.Layout.Gaps
+import           XMonad.Layout.Spacing
 import           XMonad.Layout.LayoutCombinators
 import           XMonad.Layout.ResizableTile
 import           XMonad.Layout.SubLayouts
@@ -52,13 +54,14 @@ myKeys conf@XConfig {XMonad.modMask = modMask} = M.fromList $
 
   -- layout
   , ((modMask              , xK_Tab),    sendMessage NextLayout)
-  , ((modMask              , xK_f),      sendMessage $ JumpToLayout "[ ]")
+  , ((modMask              , xK_f),      sendMessage $ JumpToLayout "[*]")
   , ((modMask              , xK_t),      treeselectAction treeTheme)
   , ((modMask              , xK_b),      sendMessage ToggleStruts)
-  , ((modMask .|. shiftMask, xK_h),      dwmpromote)
-  , ((modMask .|. shiftMask, xK_l),      dwmpromote)
-  , ((modMask .|. shiftMask .|. mod1Mask, xK_h), sendMessage (IncMasterN 1))
-  , ((modMask .|. shiftMask .|. mod1Mask, xK_l), sendMessage (IncMasterN (-1)))
+
+  , ((modMask .|. shiftMask, xK_h),      sendMessage (IncMasterN (-1)))
+  , ((modMask .|. shiftMask, xK_l),      sendMessage (IncMasterN 1))
+  , ((modMask .|. shiftMask .|. mod1Mask, xK_h), dwmpromote)
+  , ((modMask .|. shiftMask .|. mod1Mask, xK_l), dwmpromote)
   , ((modMask .|. shiftMask, xK_space),  windows W.swapMaster)
   , ((modMask              , xK_j),      windows W.focusDown)
   , ((modMask              , xK_k),      windows W.focusUp)

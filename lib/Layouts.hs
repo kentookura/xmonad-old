@@ -8,13 +8,14 @@ import Themes (barTheme, tabTheme)
 
 import qualified Data.Map as M
 
-import           XMonad
+import           XMonad hiding ( (|||) )
 import qualified XMonad.StackSet as W
 
 import           XMonad.Hooks.ManageDocks
 
 import           XMonad.Layout.Decoration
 import           XMonad.Layout.Gaps
+import           XMonad.Layout.LayoutCombinators
 import           XMonad.Layout.Named
 import           XMonad.Layout.NoBorders
 import           XMonad.Layout.NoFrillsDecoration
@@ -29,18 +30,18 @@ myLayout = tiled ||| mirrorTiled ||| full
   where
     tiled = named "[]="
       $ avoidStruts
-      $ windowNavigation
---    $ myGaps
+ --     $ myGaps
       $ addTopBar
       $ addTabs shrinkText tabTheme
---    $ mySpacing
+--      $ mySpacing
+      $ windowNavigation
       $ subLayout [] Simplest
       $ ResizableTall 1 (1/50) (2/3) []
     mirrorTiled = named "TTT"
       $ avoidStruts
---    $ myGaps
+  --    $ myGaps
       $ addTopBar
---    $ mySpacing
+   --   $ mySpacing
       $ subLayout [] Simplest
       $ Mirror $ ResizableTall 1 (2/100) (1/2) []
     full = named "[*]"

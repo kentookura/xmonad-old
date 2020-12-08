@@ -19,6 +19,7 @@ Config { font             = "xft:Dina:size=10:regular:antialias=true"
        , commands         = 
             [ Run Weather "LOWW" [ "--template", "<skyCondition> | <fc=#4682B4><tempC></fc>°C | <fc=#4682B4><rh></fc>% "
                                  ] 36000
+            , Run Mpris2 "spotify" ["-t", "<artist> - [<composer>] <title>"] 10
             , Run Battery        [ "--template" , " <acstatus>"
                                  , "--Low"      , "10"        -- units: %
                                  , "--High"     , "80"        -- units: %
