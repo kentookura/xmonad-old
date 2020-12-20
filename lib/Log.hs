@@ -61,9 +61,9 @@ botBarPP = def
 
 layoutMap :: String -> String
 layoutMap l = case l of
-                "[]=" -> "<icon=tile.xbm/>"
-                "TTT" -> "<icon=bstack.xbm/>"
-                "[*]" -> "<icon=monocle.xbm/>"
+                "tiled" -> "<icon=tile.xbm/>"
+                "mirrorTiled" -> "<icon=bstack.xbm/>"
+                "full" -> "<icon=monocle.xbm/>"
                 _     -> "unknown layout"
 
 

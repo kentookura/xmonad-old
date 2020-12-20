@@ -2,7 +2,7 @@ module Bindings
   ( myKeys
   , myMouseBindings
   )
-where 
+where
 --{{{
 import Themes
 import Topics
@@ -13,11 +13,14 @@ import Search
 import qualified Data.Map as M
 import System.IO
 import System.Exit
-import XMonad
+
+import XMonad hiding ( (|||) )
 
 import qualified XMonad.Actions.FlexibleResize as Flex
+
 import qualified XMonad.Actions.Search as S
 import qualified XMonad.Actions.TreeSelect as TS
+import           XMonad.Actions.CycleSelectedLayouts
 import           XMonad.Actions.DwmPromote
 import           XMonad.Actions.FloatKeys
 import           XMonad.Actions.PhysicalScreens
@@ -53,8 +56,8 @@ myKeys conf@XConfig {XMonad.modMask = modMask} = M.fromList $
   , ((controlMask .|. mod1Mask, xK_l),      spawn "lock")
 
   -- layout
-  , ((modMask              , xK_Tab),    sendMessage NextLayout)
-  , ((modMask              , xK_f),      sendMessage $ JumpToLayout "[*]")
+  , ((modMask              , xK_Tab),    cycleThroughLayouts ["full", "mirrorTiled"])
+  , ((modMask              , xK_f),      cycleThroughLayouts ["full", "tiled"])
   , ((modMask              , xK_t),      treeselectAction treeTheme)
   , ((modMask              , xK_b),      sendMessage ToggleStruts)
 

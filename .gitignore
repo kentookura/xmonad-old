@@ -3,5 +3,6 @@ xbm
 *.o
 prompt-history
 xpm
+tags
 xmonad.errors
 xmonad-x86_64-linux

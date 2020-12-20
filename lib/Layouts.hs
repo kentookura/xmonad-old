@@ -16,7 +16,7 @@ import           XMonad.Hooks.ManageDocks
 import           XMonad.Layout.Decoration
 import           XMonad.Layout.Gaps
 import           XMonad.Layout.LayoutCombinators
-import           XMonad.Layout.Named
+import           XMonad.Layout.Renamed
 import           XMonad.Layout.NoBorders
 import           XMonad.Layout.NoFrillsDecoration
 import           XMonad.Layout.ResizableTile
@@ -28,23 +28,23 @@ import           XMonad.Layout.WindowNavigation
 
 myLayout = tiled ||| mirrorTiled ||| full
   where
-    tiled = named "[]="
+    tiled = renamed [Replace "tiled"]
       $ avoidStruts
- --     $ myGaps
+ --   $ myGaps
       $ addTopBar
       $ addTabs shrinkText tabTheme
---      $ mySpacing
+--    $ mySpacing
       $ windowNavigation
       $ subLayout [] Simplest
       $ ResizableTall 1 (1/50) (2/3) []
-    mirrorTiled = named "TTT"
+    mirrorTiled = renamed [Replace "mirrorTiled"]
       $ avoidStruts
-  --    $ myGaps
+  --  $ myGaps
       $ addTopBar
-   --   $ mySpacing
+  --  $ mySpacing
       $ subLayout [] Simplest
       $ Mirror $ ResizableTall 1 (2/100) (1/2) []
-    full = named "[*]"
+    full = renamed [Replace "full"]
       $ avoidStruts
       $ noBorders Full
     addTopBar = noFrillsDeco shrinkText barTheme
